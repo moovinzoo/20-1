@@ -6,6 +6,7 @@ CustomerRequirement::CustomerRequirement(DaysOnCamp daysOnCamp, Weight preferred
     preferred_meal_weight = preferredMealWeight;
 }
 // Testing comments
+// Testing comments 2
 
 
 DaysOnCamp CustomerRequirement::getDaysOnCamp() {
