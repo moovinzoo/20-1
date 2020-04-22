@@ -2,36 +2,42 @@
 #include <iostream>
 using namespace std;
 
+//TODO:
 Backpack::Backpack() {
-
 }
 
+//TODO:
 void Backpack::assignMeals(CustomerRequirement customerRequirement) {
 
 }
 
+//TODO:
 void Backpack::assignItem(CustomerRequirement customerRequirement) {
 
 }
 
+//TODO:
 void Backpack::packBackpack() {
 
 }
 
+//TODO:
 void Backpack::addItem(Item item) {
 
 }
 
+//TODO:
 void Backpack::removeItem(int i) {
 
 }
 
+//TODO:
 void Backpack::removeItem(Item item) {
 
 }
 
+//TODO:
 void Backpack::print() {
-
 }
 
 Meal* Backpack::getMeals() {
