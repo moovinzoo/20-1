@@ -29,11 +29,11 @@ Backpack::Backpack() {
 
 //TODO:
 void Backpack::assignMeals(CustomerRequirement customerRequirement) {
-    // Declare member variables to store parameter's data
+    // Set local variables to store parameter's data to avoid re-visiting another class for performance.
     DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp;
     Weight meal_weight = customerRequirement.getPreferredMealWeight;
 
-    // Set days & nights by comparing enum data types
+    // Set local variables by comparing enum data types.
     int days, nights;
     if (days_on_camp == ONE) {
         days = 1;
@@ -46,29 +46,30 @@ void Backpack::assignMeals(CustomerRequirement customerRequirement) {
         nights = 2;
     }
 
-    // Set member variable meal_length
+    // Assign member variable 'meal_length'.
     this->meal_length = (days * 2) + (nights * 2);
 
-    // Assign meals by days
-    Meal *arr_meals[this->getMealLength()];
+    // Set local variable 'arr_meals' that is going to assign member variable 'meals', later.
+    Meal arr_meals[this->getMealLength()];
+
+    // Put day-related Meals in 'arr_meals'
     for (int i = 0; i < (days * 2); i += 2) {
-        arr_meals[i] = new Meal(LUNCH, meal_weight);
-        arr_meals[i+1] = new Meal(SNACK, meal_weight);
+        arr_meals[i] = Meal(LUNCH, meal_weight);
+        arr_meals[i+1] = Meal(SNACK, meal_weight);
     }
 
-    // Assign meals by nights
+    // Put night-related Meals in 'arr_meals'
     for (int i = (days * 2); i < getMealLength(); i += 2) {
-        arr_meals[i] = new Meal(BREAKFAST, meal_weight);
-        arr_meals[i+1] = new Meal(DINNER, meal_weight);
+        arr_meals[i] = Meal(BREAKFAST, meal_weight);
+        arr_meals[i+1] = Meal(DINNER, meal_weight);
     }
-    
 
-
+    // Assign local variable 'arr_meals' to member variable 'meals'
+    this->setMeals(arr_meals);
 }
 
 //TODO:
 void Backpack::assignItem(CustomerRequirement customerRequirement) {
-
 }
 
 //TODO:
