@@ -2,16 +2,9 @@
 #include <iostream>
 using namespace std;
 
-/* TODO:
-    1. Initialize the storeInventory member v.
-    - by using the StoreInventory member v. with the inventory created by using the StoreInventory class.
-    2. Instantiate the zones array.
-    - two-dimentional Item array that represents the zones of the backpack in which corresponding types of tiems should be packed.
-    - first dimension of the array should have as many elements as there are available zones in the picture.
-    - second dimension should be an array that is capable of holding zero to many items of Item, depending on the number of items that need to be put in a specific zone of a backpack.
-*/
+//TODO: ver.1
 Backpack::Backpack() {
-    // FIXME: Is it needed outside of the scope?
+    //FIXME: Is it needed outside of the scope?
     // I think the answer is YES
     // But it is already decleared as 'new' in class::StoreInventory
     // So no need to instantiated as 'new' keyword in this Constructor
@@ -19,6 +12,7 @@ Backpack::Backpack() {
     // StoreInventory *si = new StoreInventory();
     this->setItems(StoreInventory().item_list);
 
+    // zone 수만 고정, 각각의 item 수는 미정 -> 동적할당
     // 임의로 지정가능?
     // [5]로 fix 가능?
     //FIXME: new로 선언할 필요가 있나? 어차피 tmp_zones에 할당될텐데.
@@ -27,14 +21,15 @@ Backpack::Backpack() {
 
 }
 
-//TODO:
+//TODO: ver.1
 void Backpack::assignMeals(CustomerRequirement customerRequirement) {
-    // Set local variables to store parameter's data to avoid re-visiting another class for performance.
+    // Set local variables 'days_on_camp', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
     DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp;
     Weight meal_weight = customerRequirement.getPreferredMealWeight;
 
-    // Set local variables by comparing enum data types.
-    int days, nights;
+    // Set local variables 'days', 'nights' by comparing enum data types.
+    int days;
+    int nights;
     if (days_on_camp == ONE) {
         days = 1;
         nights = 0;
@@ -52,6 +47,7 @@ void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     // Set local variable 'arr_meals' that is going to assign member variable 'meals', later.
     Meal arr_meals[this->getMealLength()];
 
+    //FIXME: Is it needed to sort these Meals in some order?
     // Put day-related Meals in 'arr_meals'
     for (int i = 0; i < (days * 2); i += 2) {
         arr_meals[i] = Meal(LUNCH, meal_weight);
@@ -68,8 +64,69 @@ void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     this->setMeals(arr_meals);
 }
 
-//TODO:
+//TODO: ver.1
 void Backpack::assignItem(CustomerRequirement customerRequirement) {
+    // Set local variables 'days_on_camp', 'item_weight', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
+    DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp;
+    Weight item_weight = customerRequirement.getPreferredItemWeight;
+    Weight meal_weight = customerRequirement.getPreferredMealWeight;
+
+    // Set local variables by comparing enum data types.
+    int cnt_fish_camping;
+    int cnt_overnight_camping;
+    int cnt_overnight_cooking_camping;
+    if (days_on_camp == ONE) {
+        cnt_fish_camping = 1;
+        cnt_overnight_camping = 0;
+        cnt_overnight_cooking_camping = 0;
+    } else if ((days_on_camp == TWO) && (meal_weight == HIGH)) {
+        cnt_fish_camping = 2;
+        cnt_overnight_camping = 0;
+        cnt_overnight_cooking_camping = 1;
+    } else if ((days_on_camp == TWO) && (meal_weight != HIGH)) {
+        cnt_fish_camping = 2;
+        cnt_overnight_camping = 1;
+        cnt_overnight_cooking_camping = 0;
+    } else if ((days_on_camp == THREE) && (meal_weight == HIGH)) {
+        cnt_fish_camping = 3;
+        cnt_overnight_camping = 0;
+        cnt_overnight_cooking_camping = 2;
+    } else if ((days_on_camp == THREE) && (meal_weight != HIGH)) {
+        cnt_fish_camping = 3;
+        cnt_overnight_camping = 2;
+        cnt_overnight_cooking_camping = 0;
+    } else {
+        cout << "COUNTING CAMPING FAILED" << endl;
+    }
+
+    // Assign member variable 'item_length'.
+    //FIXME: cnt_overnight_cooking_camping 관련 확정해야 한다. 질문해둠 ; 일단, 포함으로 해둠.
+    this->item_length = (cnt_fish_camping * 4) + (cnt_overnight_camping * 2) + (cnt_overnight_cooking_camping * 3);
+
+    // Set local variable 'arr_meals' that is going to assign member variable 'meals', later.
+    Item arr_items[this->getItemLength()];
+
+    //TODO: from here.
+
+    // Set local variable 'arr_items' that is going to assign member variable 'items', later.
+    // Cannot 
+    // Meal *arr_items;
+
+    //FIXME: Is it needed to sort these Meals in some order?
+    // Put day-related Meals in 'arr_meals'
+    for (int i = 0; i < (days * 2); i += 2) {
+        arr_meals[i] = Meal(LUNCH, meal_weight);
+        arr_meals[i+1] = Meal(SNACK, meal_weight);
+    }
+
+    // Put night-related Meals in 'arr_meals'
+    for (int i = (days * 2); i < getMealLength(); i += 2) {
+        arr_meals[i] = Meal(BREAKFAST, meal_weight);
+        arr_meals[i+1] = Meal(DINNER, meal_weight);
+    }
+
+    // Assign local variable 'arr_meals' to member variable 'meals'
+    this->setMeals(arr_meals);
 }
 
 //TODO:
