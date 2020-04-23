@@ -14,8 +14,14 @@ Backpack::Backpack() {
     // 임의로 지정가능?
     // [5]로 fix 가능?
     //FIXME: new로 선언할 필요가 있나? 어차피 tmp_zones에 할당될텐데.
-    this->items = StoreInventory().item_list;
+    this->storeInventory = StoreInventory().item_list;
     this->zones = new Item*[5];
+
+    //TODO: Initialize rest of the member variables to 0/NULL
+    this->meals = NULL;
+    this->meal_length = 0;
+    this->items = NULL;
+    this->item_length = NULL;
 }
 
 //TODO: ver.3
@@ -87,7 +93,6 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     }
 
     // Set local variables 'cnt_fishing_item' and 'cnt_overnight_item' by considering 'meal_weight'
-    //FIXME: from Q&A, "1박2일이던 2박3일이던 fish camping은 한 번 가는거죠. 제가 설명하고자 했던바는 낚시캠핑을 갈때 설명드린 4개의 아이템이 기본적으로 무조건 필요한것이고 그외에 숙박을 하냐 밥무게가 무겁냐에 따라 장비가 추가되는겁니다."
     int cnt_fishing_item = 4;
     int cnt_overnight_item = 2;
     //FIXME: is_cooking_item_required 안필요하면 더 간단하게 정의해도 될 듯. boolean 따로 안쓰고 바로 overnight_item에 set해도 되니까.
@@ -106,7 +111,41 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     // Instantiate member variable 'items'
     this->items = new Item[this->item_length];
 
+    // Gets items from store inventory
 
+    // assignItem에 의하면 각 아이템은 하나씩 밖에 들어가지 않는데 removeItem에서는 중복된거는 하나만 삭제하라고 해서 충분히 헷갈릴만한 소지가 있었네요.
+    // 저의 의도는 만약 addItem의 사용으로 중복된 Item들이 items array에 들어가있을수도 있는 상황에 대해 removeItem은 하나만 삭제하라고 얘기했습니다. 그에 따라 packBackpack의 설명이 많이 부족한 상태네요. 
+
+    // backBackpack할 때는 만약 해당 zone에 들어가야될 Item이 하나가 아닌 다수가 있을 경우 그중 하나만 넣으라고 설명을 수정해놓겠습니다. (그러나 이러한 상황은 제가 드릴 테스트 코드에 포함이 되어있을 수도 안되어있을 수도 있습니다. 그에 따라 유동적으로 코딩을 해주시면 되겠습니다.
+    //일상에 빗대어 말하자면 assignItem은 고객의 요청에 의해 필요한 최소한의 물품만 준비해준다라고 생각하면 좋겠고요. addItem은 고객이 추가적으로 구매한다? 정도로 생각하면 되겠습니다. 그에 따라 가방을 쌀때는 (packBackpack) 다 들고 갈 필요는 없으니 겹치는 장비중 하나만 가져간다 라고 생각하면 좋겠습니다. 감사합니다.
+
+    // list = {clothing, fishing rod, lure, water, (sleeping bag, tent, (cooking equipment))}
+
+    // Making Item's candidate(full) list, local variable 'possibly_needed_items'.
+    Item *possibly_needed_items[] = {
+        new Item(CLOTHING, item_weight),
+        new Item(FISHING_ROD, item_weight),
+        new Item(LURE, item_weight),
+        new Item(WATER, HIGH),
+        new Item(SLEEPING_BAG, item_weight),
+        new Item(TENT, item_weight),
+        new Item(COOKING, item_weight),
+    };
+
+    for (int i = 0; i < this->item_length; i++) {
+        ItemType _type = possibly_needed_items[i]->getItemType();
+        Weight _weight = possibly_needed_items[i]->getWeight();
+        // Put Items from full list to member variable 'items' considering it's quantity.
+        this->items[i].setItemType(_type);
+        this->items[i].setWeight(_weight);
+        // Get item, next (cause, it is guaranteed that Item shortage from the inventory is not happening)
+        while()
+    }
+
+
+    for (int i = 0; i < this->item_length; i++) {
+
+    }
 
 
     // if (days_on_camp == ONE) {
@@ -161,6 +200,8 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
 
     // Assign local variable 'arr_meals' to member variable 'meals'
     this->setMeals(arr_meals);
+
+    //TODO: deleting full list of Items.
 }
 
 //TODO:

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "algorithm": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "new": "cpp"
     }
 }
