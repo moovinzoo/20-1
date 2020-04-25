@@ -3,6 +3,7 @@
 using namespace std;
 #define INVENTORY_SIZE 42 // Hard-coded the length of inventory's items
 #define SORT_OF_ITEMS 7 // Hard-coded the length of inventory's items
+#define CNT_ZONES 5
 
 //TODO: ver.2 ; for not using getter and setter
 Backpack::Backpack() {
@@ -17,7 +18,9 @@ Backpack::Backpack() {
     // [5]로 fix 가능?
     //FIXME: new로 선언할 필요가 있나? 어차피 tmp_zones에 할당될텐데.
     this->storeInventory = StoreInventory().item_list;
-    this->zones = new Item*[5];
+    this->zones = new Item*[CNT_ZONES];
+    // vector<vector<Item> > *vectorName = new vector<vector<Item> >(5, vector<Item>(2));
+    // *(this->zones) = vector<vector<Item>>(5, vector<Item>(2));
 
     //TODO: Initialize rest of the member variables to 0/NULL
     this->meals = NULL;
@@ -262,8 +265,29 @@ void Backpack::removeItem(Item item) {
 
 }
 
-//TODO:
+//FIXME: 동적할당된 배열의 끝을 알 수 있는 방법이 없다. Segmentation Fault 날 수도.. 걍 대충 막아놓음
+//TODO: v.1
 void Backpack::print() {
+    // For each zones
+    int max_partitions_of_zone = 2;
+    for (int i = 0; i < CNT_ZONES; i++) {
+        // Print message which zone I am focussing
+        cout << "Zone " << i << ":" << endl;
+        // Pass, if there's no Item inside
+        if (this->zones[i] == NULL) continue;
+        // If there's Item inside,
+        else {
+            for (int j = 0; j < max_partitions_of_zone; j++) {
+                Item curr_item = this->zones[i][j];
+                // If there's Item
+                if (curr_item.getWeight == LOW || curr_item.getWeight == MEDIUM || curr_item.getWeight == HIGH) {
+                    // Print by its regular form
+                    this->zones[i][j].print();
+                }
+            }
+        }
+
+    }
 }
 
 Meal* Backpack::getMeals() {
