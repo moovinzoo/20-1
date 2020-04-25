@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 #define INVENTORY_SIZE 42 // Hard-coded the length of inventory's items
-#define SORS_OF_ITEMS 7 // Hard-coded the length of inventory's items
+#define SORT_OF_ITEMS 7 // Hard-coded the length of inventory's items
 
 //TODO: ver.2 ; for not using getter and setter
 Backpack::Backpack() {
@@ -31,8 +31,8 @@ Backpack::Backpack() {
 // ver.3 ; from 'days' and 'nights' to 'cnt_days' and 'cnt_nights'
 void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     // Set local variables 'days_on_camp', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
-    DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp;
-    Weight meal_weight = customerRequirement.getPreferredMealWeight;
+    DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp();
+    Weight meal_weight = customerRequirement.getPreferredMealWeight();
 
     // Set local variables 'days', 'nights' by comparing enum data types.
     int cnt_days;
@@ -72,11 +72,12 @@ void Backpack::assignMeals(CustomerRequirement customerRequirement) {
 }
 
 //TODO: ver.1 ; with not using get/set
+//FIXME: add로 인해 items가 미리 채워져있는 경우도 생각해야하나?
 void Backpack::assignItem(CustomerRequirement customerRequirement) {
     // Set local variables 'days_on_camp', 'item_weight', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
-    DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp;
-    Weight item_weight = customerRequirement.getPreferredItemWeight;
-    Weight meal_weight = customerRequirement.getPreferredMealWeight;
+    DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp();
+    Weight item_weight = customerRequirement.getPreferredItemWeight();
+    Weight meal_weight = customerRequirement.getPreferredMealWeight();
 
     // Set local variables 'cnt_days', 'cnt_nights' by comparing enum data types.
     int cnt_days;
@@ -130,7 +131,7 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     for (int i = 0; i < this->item_length; i++) {
         // Looking for the exactly matching Item from 'storeInventory'
         for (int j = 0; j < INVENTORY_SIZE; j++) {
-            // If matches, then store it into member variable 'items
+            // If matches, then store it into member variable 'items'
             if (possibly_needed_items[i]->equals(this->storeInventory[j])) {
                 this->items[i].setItemType(possibly_needed_items[i]->getItemType());
                 this->items[i].setWeight(possibly_needed_items[i]->getWeight());
@@ -142,50 +143,77 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     }
 
     // Safely delete the local variable 'possibly_needed_items'
-    for (int i = 0; i < SORS_OF_ITEMS; i++) {
+    for (int i = 0; i < SORT_OF_ITEMS; i++) {
         delete(possibly_needed_items[i]);
     }
 }
 
 //TODO: Move Items in 'items' into 'zones'
+//FIXME: 하나 넣으면 하나 더 있어도 지금은 그냥 무시, 여럿 중 하나만 넣는 것은 충족하는데 items로부터 지운다던가 명시되지 않은 action은 발생 X
 void Backpack::packBackpack() {
-    ItemType packing_order[SORS_OF_ITEMS] = {TENT,SLEEPING_BAG, WATER, COOKING, CLOTHING, FISHING_ROD, LURE};
-    for (int i = 0; i < this->item_length; i++) {
-        // ItemType curr_item_type = items[i].getItemType;
-        // Weight curr_item_weight = items[i].getWeight;
-        // switch (curr_item_type)
-        // {
-        // case LURE:
-        //     this->zones[0] = new Item(LURE, curr_item_weight);
-        //     break;
-        // case FISHING_ROD:
-        //     this->zones[1] = new Item(FISHING_ROD, curr_item_weight);
-        //     break;
-        // case CLOTHING:
-        //     this->zones[2] = new Item(CLOTHING, curr_item_weight);
-        //     break;
-        // case COOKING:
-        //     this->zones[3] = new Item(COOKING, curr_item_weight);
-        //     break;
-        // case WATER:
-        //     this->zones[3] = new Item(WATER, curr_item_weight);
-        //     break;
-        // case SLEEPING_BAG:
-        //     this->zones[4] = new Item(SLEEPING_BAG, curr_item_weight);
-        //     break;
-        // case TENT:
-        //     this->zones[4] = new Item(WATER, curr_item_weight);
-        //     break;
-        // default:
-        //     cout << "Failed to assign 'items' to 'zones'" << endl;
-        //     break;
-        // }
+    // There's certain order for packing bags
+    ItemType packing_order[SORT_OF_ITEMS] = {SLEEPING_BAG, TENT, COOKING, WATER, CLOTHING, FISHING_ROD, LURE};
+    int packing_zones[SORT_OF_ITEMS] = {4, 4, 3, 3, 2, 1, 0};
+
+    //FIXME: .compareTo() 메서드 전혀 이용하고 있지 못한데, 출력결과에 어떤 의미가 있는지를 모르겠네..
+
+    // At each order of items
+    for (int i = 0; i < SORT_OF_ITEMS; i++) {
+        // Set local variables not to re-visiting outside
+        ItemType curr_packing_order = packing_order[i];
+        int curr_packing_zone = packing_zones[i];
+        // Search that Item in 'items'
+        for (int j = 0; j < this->item_length; j++) {
+            // if it is exact Item that was looking for
+            if (this->items[j].getItemType() == curr_packing_order) {
+                // case 1 : this Item comes first in this zone
+                if (this->zones[curr_packing_zone] == NULL) {
+                    this->zones[curr_packing_zone] = new Item[1];
+                    this->zones[curr_packing_zone][0] = this->items[j];
+                // case 2 : this Item comes second in this zone
+                } else {
+                    // copying the existing(first) Item
+                    Item past_item(this->zones[curr_packing_zone][0]);
+                    // increasing size of zone
+                    this->zones[curr_packing_zone] = new Item[2];
+                    this->zones[curr_packing_zone][0] = past_item;
+                    this->zones[curr_packing_zone][1] = this->items[j];
+                }
+                // Search ended, get out of for-loop
+                break;
+            }
+        }
     }
 }
 
-//TODO:
+//TODO: v.1
 void Backpack::addItem(Item item) {
+    // if assignItem() or addItem() never called before('items' is empty)
+    if (this->items == NULL) {
+        this->items = new Item[1];
+        items[0] = item;
+        this->item_length = 1;
+    } else {
+        // Copy existing Items
+        Item curr_items[this->item_length + 1];
+        for (int i = 0; i < this->item_length; i++) {
+            curr_items[i] = this->items[i];
+        }
 
+        // re-assign 'items' by new length
+        this->items = new Item[(this->item_length) + 1];
+        
+        // Move Items back
+        for (int i = 0; i < this->item_length; i++) {
+            this->items[i] = curr_items[i];
+        }
+
+        // Add new one in the last place
+        this->items[this->item_length] = item;
+
+        // Increase 'item_length'
+        (this->item_length)++;
+    }
 }
 
 // assignItem에 의하면 각 아이템은 하나씩 밖에 들어가지 않는데 removeItem에서는 중복된거는 하나만 삭제하라고 해서 충분히 헷갈릴만한 소지가 있었네요.
@@ -193,13 +221,44 @@ void Backpack::addItem(Item item) {
 // backBackpack할 때는 만약 해당 zone에 들어가야될 Item이 하나가 아닌 다수가 있을 경우 그중 하나만 넣으라고 설명을 수정해놓겠습니다. (그러나 이러한 상황은 제가 드릴 테스트 코드에 포함이 되어있을 수도 안되어있을 수도 있습니다. 그에 따라 유동적으로 코딩을 해주시면 되겠습니다.
 //일상에 빗대어 말하자면 assignItem은 고객의 요청에 의해 필요한 최소한의 물품만 준비해준다라고 생각하면 좋겠고요. addItem은 고객이 추가적으로 구매한다? 정도로 생각하면 되겠습니다. 그에 따라 가방을 쌀때는 (packBackpack) 다 들고 갈 필요는 없으니 겹치는 장비중 하나만 가져간다 라고 생각하면 좋겠습니다. 감사합니다.
 
-//TODO:
+//TODO: Copy 'items' except i-th Item
 void Backpack::removeItem(int i) {
+    // Set local variable that has smaller length
+    Item new_items[(this->item_length) - 1];
+    for (int j = 0; j < this->item_length; j++) {
+        // Copying Items from 'items' to 'new_items'
+        if (j == i) continue; // except i-th Item
+        new_items[j] = this->items[j];
+    }
 
+    // Re-assign 'items' and 'item_length'
+    this->items = new Item[item_length - 1];
+    (this->item_length)--;
+
+    // Copying Items from 'new_items' to re-assigned 'items'
+    for (int j = 0; j < this->item_length; j++) {
+        this->items[j] = new_items[j];
+    }
 }
 
-//TODO:
+//TODO: Copy 'items' except item
 void Backpack::removeItem(Item item) {
+    // Set local variable to copy 'items' except item
+    Item new_items[(this->item_length) - 1];
+    for (int j = 0; j < this->item_length; j++) {
+        // Copying Items from 'items' to 'new_items'
+        if (this->items[j].equals(item)) continue; // except item
+        new_items[j] = this->items[j];
+    }
+
+    // Re-assign 'items' and 'item_length'
+    this->items = new Item[item_length - 1];
+    (this->item_length)--;
+
+    // Copying Items from 'new_items' to re-assigned 'items'
+    for (int j = 0; j < this->item_length; j++) {
+        this->items[j] = new_items[j];
+    }
 
 }
 
