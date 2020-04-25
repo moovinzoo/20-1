@@ -70,6 +70,7 @@ void StoreInventory::ReadFromFile(string filename) {
                 Item item(it, w);
                 item_vector.push_back(item);
             }
+            parsed_line.clear(); // added line
         }
         
         random_shuffle(item_vector.begin(), item_vector.end());
