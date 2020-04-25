@@ -97,7 +97,7 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     // Set local variables 'cnt_fishing_item' and 'cnt_overnight_item' by considering 'meal_weight'
     int cnt_fishing_item = 4;
     int cnt_overnight_item = 2;
-    V
+
     //FIXME: is_cooking_item_required 안필요하면 더 간단하게 정의해도 될 듯. boolean 따로 안쓰고 바로 overnight_item에 set해도 되니까.
     bool is_cooking_item_required = (meal_weight == HIGH);
     if (is_cooking_item_required) {
@@ -145,12 +145,42 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     for (int i = 0; i < SORS_OF_ITEMS; i++) {
         delete(possibly_needed_items[i]);
     }
-    // for (int i = 0; (i < this->item_length; i++) {
 }
 
 //TODO: Move Items in 'items' into 'zones'
 void Backpack::packBackpack() {
-    for
+    ItemType packing_order[SORS_OF_ITEMS] = {TENT,SLEEPING_BAG, WATER, COOKING, CLOTHING, FISHING_ROD, LURE};
+    for (int i = 0; i < this->item_length; i++) {
+        // ItemType curr_item_type = items[i].getItemType;
+        // Weight curr_item_weight = items[i].getWeight;
+        // switch (curr_item_type)
+        // {
+        // case LURE:
+        //     this->zones[0] = new Item(LURE, curr_item_weight);
+        //     break;
+        // case FISHING_ROD:
+        //     this->zones[1] = new Item(FISHING_ROD, curr_item_weight);
+        //     break;
+        // case CLOTHING:
+        //     this->zones[2] = new Item(CLOTHING, curr_item_weight);
+        //     break;
+        // case COOKING:
+        //     this->zones[3] = new Item(COOKING, curr_item_weight);
+        //     break;
+        // case WATER:
+        //     this->zones[3] = new Item(WATER, curr_item_weight);
+        //     break;
+        // case SLEEPING_BAG:
+        //     this->zones[4] = new Item(SLEEPING_BAG, curr_item_weight);
+        //     break;
+        // case TENT:
+        //     this->zones[4] = new Item(WATER, curr_item_weight);
+        //     break;
+        // default:
+        //     cout << "Failed to assign 'items' to 'zones'" << endl;
+        //     break;
+        // }
+    }
 }
 
 //TODO:
