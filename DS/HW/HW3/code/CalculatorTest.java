@@ -27,7 +27,6 @@ public class CalculatorTest
 
 	private static void command(String input) throws Exception
 	{
-		// TODO: 2020/04/26 공백제거
         Stack<Element> postfixStack = Parsing.processInput(input);
 
 		// TODO: 2020/04/26 Parsing(각 함수로 쪼개기)
