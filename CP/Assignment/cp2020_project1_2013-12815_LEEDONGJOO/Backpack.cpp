@@ -1,4 +1,5 @@
 #include "Backpack.h"
+#include <vector>
 #include <iostream>
 using namespace std;
 #define INVENTORY_SIZE 42 // Hard-coded the length of inventory's items
@@ -21,6 +22,17 @@ Backpack::Backpack() {
     this->zones = new Item*[CNT_ZONES];
     // vector<vector<Item> > *vectorName = new vector<vector<Item> >(5, vector<Item>(2));
     // *(this->zones) = vector<vector<Item>>(5, vector<Item>(2));
+
+
+    //TODO: 오브젝트 포인트 벡터에 오브젝트 포인터 할당하기.
+    // 이렇게 하면, print()문제도 해결될 것 같다.
+    // size Expand/Shrink도 용이핟.
+    // 해결해야 할 점 ; new를 하지 않아도 되는지
+    // 기타 벡터 특성 반영할 수 있도록
+    //FIXME: for Refactoring ; by using std::vector
+    // vector<Item *> new_vector;
+    // zones = &new_vector[0];
+
 
     //TODO: Initialize rest of the member variables to 0/NULL
     this->meals = NULL;
