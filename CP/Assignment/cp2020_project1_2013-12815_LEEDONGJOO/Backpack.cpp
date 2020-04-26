@@ -1,5 +1,6 @@
 #include "Backpack.h"
-#include <vector>
+// #include <vector>
+// #include <list>
 #include <iostream>
 using namespace std;
 #define INVENTORY_SIZE 42 // Hard-coded the length of inventory's items
@@ -19,9 +20,7 @@ Backpack::Backpack() {
     // [5]로 fix 가능?
     //FIXME: new로 선언할 필요가 있나? 어차피 tmp_zones에 할당될텐데.
     this->storeInventory = StoreInventory().item_list;
-    this->zones = new Item*[CNT_ZONES];
-    // vector<vector<Item> > *vectorName = new vector<vector<Item> >(5, vector<Item>(2));
-    // *(this->zones) = vector<vector<Item>>(5, vector<Item>(2));
+    // this->zones = new Item*[CNT_ZONES];
 
 
     //TODO: 오브젝트 포인트 벡터에 오브젝트 포인터 할당하기.
@@ -30,8 +29,16 @@ Backpack::Backpack() {
     // 해결해야 할 점 ; new를 하지 않아도 되는지
     // 기타 벡터 특성 반영할 수 있도록
     //FIXME: for Refactoring ; by using std::vector
+    // Item *tmpItemPtr = new Item[5];
+    // new_vector.push_back(tmpItemPtr);
     // vector<Item *> new_vector;
     // zones = &new_vector[0];
+
+    //TODO: 리스트버전이 더 나을지도.
+
+    
+
+    
 
 
     //TODO: Initialize rest of the member variables to 0/NULL
