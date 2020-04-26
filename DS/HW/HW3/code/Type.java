@@ -1,3 +1,3 @@
 public enum Type {
-    INTEGER, OPERATOR
+    OPERAND, OPERATOR
 }
