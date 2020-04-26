@@ -25,7 +25,7 @@ public class CalculatorTest
 		}
 	}
 
-	private static void command(String input)
+	private static void command(String input) throws Exception
 	{
 		// TODO: 2020/04/26 공백제거
         Stack<Element> postfixStack = Parsing.infixToPostfix(input);

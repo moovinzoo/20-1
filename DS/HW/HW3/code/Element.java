@@ -30,9 +30,9 @@ public class Element {
         char firstChar = chunkWithNoSpaces.charAt(0);
 
         // _chunk holds integer
-        if (firstChar >= '0' && firstChar <= '9') {
+        if (firstChar >= '0' && firstChar <= '9') {}
 
-        } else if (firstChar == '+' || firstChar == '-' || )
+//        } else if (firstChar == '+' || firstChar == '-' || )
     }
 
     public long getInteger() {
