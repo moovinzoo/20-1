@@ -141,6 +141,11 @@ public class Parsing {
             }
         }
 
+        // Until operationStack is empty
+        while (!operatorStack.isEmpty()) {
+            postfixStack.push(operatorStack.pop());
+        }
+
         return postfixStack;
     }
 }
