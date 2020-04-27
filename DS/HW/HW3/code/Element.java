@@ -113,10 +113,6 @@ public class Element {
         throw new Exception("NOT ALLOWED: FAILED TO PAIR OPERATOR");
     }
 
-    public void makeOperandNegative() {
-        this.operand *= (-1);
-    }
-
     public void makeOperatorUnary() {
         this.operand = '~';
     }
