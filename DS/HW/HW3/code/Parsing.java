@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Parsing {
 
-    private static final Pattern INTEGER_WITH_SPACES = Pattern.compile("[ \t]*[0-9]+[ \t]*");
+    private static final Pattern OPERAND_WITH_SPACES = Pattern.compile("[ \t]*[0-9]+[ \t]*");
 
     // FIXME: 2020/04/26 "이렇게하면 throw 되나?"
     public static Stack<Element> processInput(String input) throws Exception {
@@ -54,11 +54,37 @@ public class Parsing {
 
         /* Processes = {"Removing spaces", "Determine each Type(enum) of chunks"} */
 
-        // Remove spaces from input string
-        input = SPACE_PATTERN.matcher(input).replaceAll("");
+        // Extract operands with spaces
+        Matcher operandMatcher = OPERAND_WITH_SPACES.matcher(input);
+        int prevStart = -1;
+        int prevEnd = 0;
 
-        // TODO : Extract intStrings with sign
-        Matcher integerMatcher = INTEGER_WITH_SIGN.matcher(input);
+        // Until there's more operand(with spaces back and forth)
+        while (operandMatcher.find()) {
+            // Store 'operand with spaces' as string, with removing spaces.
+            String currOperand = operandMatcher.group().replaceAll("[ \t]*", "");
+            int currStart = operandMatcher.start();
+            int currEnd = operandMatcher.end();
+
+            // First search
+//            if (prevEnd == currStart) { // Not happening
+
+
+            }
+
+
+
+            StringBuffer sb = new StringBuffer();
+
+            // Store space-removed String type operand as Element class
+
+        }
+
+
+
+
+
+
         StringBuffer sb = new StringBuffer();
         int cnt = 1;
         String intStr1 = null, intStr2 = null;
