@@ -80,7 +80,8 @@ public class Element {
         if (rightOperator == '(' || rightOperator == ')') return -1;
 
         if (leftOpertor == '^') {
-            if (rightOperator == '^') return -1;
+            // ^ is right-associative, return 1 for the same-priority case
+            if (rightOperator == '^') return 1;
             else return 1;
         }
         if (rightOperator == '^') return -1;
@@ -103,11 +104,8 @@ public class Element {
 
         // Only-left case is left:+/- & right:+/-
         if (leftOpertor == '+' || leftOpertor == '-') {
-            // +, - are left-associative, return -1 for the same-priority case
-            if (rightOperator == '+' || leftOpertor == '-') return -1;
-            else {
-                throw new Exception("NOT ALLOWED: FAILED TO PAIR OPERATOR");
-            }
+            // +, - are left-associative, return even -1 for the same-priority case
+            return -1;
         }
 
         throw new Exception("NOT ALLOWED: FAILED TO PAIR OPERATOR");
