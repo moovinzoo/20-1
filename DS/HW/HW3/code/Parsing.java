@@ -128,7 +128,7 @@ public class Parsing {
                 } else {
                     // Compare priorities between 'currElem' and 'top element of Stack'
                     // If, current element has low-priority,
-                    if (currElem.compareTo(operatorStack.peek()) < 0) {
+                    while (currElem.compareTo(operatorStack.peek()) < 0) {
                         // Pop operator on the top of the operatorstack that has high-priority, and push it to the postfixStack.
                         postfixStack.push(operatorStack.pop());
                     }
