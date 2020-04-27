@@ -7,7 +7,7 @@ import java.util.Stack;
 public class Calculator {
     public static long calculate(Stack<Element> postfixStack) throws Exception {
         // Instantiate local variable for calculation.
-        Queue<Long> operandQueue = new LinkedList<>();
+        Stack<Long> operandStack = new Stack<>();
 
         // Until postfixStack is empty,
         while (!postfixStack.isEmpty()) {
@@ -16,68 +16,49 @@ public class Calculator {
 
             // Operator pops
             if (currElem.isOpertor()) {
-                Element newElem;
+                char currOperator = currElem.getOperator();
 
-                if (currElem.getOperator() == '^') {
-                    long base = operandQueue.poll();
-                    long exponent = operandQueue.poll();
-                    operandQueue.add((long)Math.pow(base, exponent));
+                if (currOperator == '^') {
+                    long exponent = operandStack.pop();
+                    long base = operandStack.pop();
+                    operandStack.push((long)Math.pow(base, exponent));
 
-                } else if (currElem.getOperator() == '~') {
-                    if (operandQueue.size() == 2) {
-                        operandQueue.
-                    }
-                    long toNegative = operandQueue.();
-                    operandQueue.add(toNegative * (-1));
+                } else if (currOperator == '~') {
+                    long toNegative = operandStack.pop();
+                    operandStack.push(toNegative * (-1));
 
                 } else {
-                    // currElem.getOperator() is {*, /, %, +, -}
-
-                }
-                switch(currElem.getOperator()) {
-                    case '^': {
-                        break;
+                    long right = operandStack.pop();
+                    long left = operandStack.pop();
+                    if (currOperator == '*') {
+                        operandStack.push(left * right);
+                    } else if (currOperator == '%') {
+                        operandStack.push(left % right);
+                    } else if (currOperator == '/') {
+                        operandStack.push(left / right);
+                    } else if (currOperator == '+') {
+                        operandStack.push(left + right);
+                    } else if (currOperator == '-') {
+                        operandStack.push(left - right);
+                    } else {
+                        throw new Exception("NOT WORKING: NOT ALLOWED OPERATOR REMAINS!");
                     }
-                    case '~': {
-                        break;
-                    }
-                    case '*': {
-                        long left = operandQueue.poll();
-                        long right = operandQueue.poll();
-                        operandQueue.add(left * right);
-                        break;
-                    }
-                    case '/': {
-                        long left = operandQueue.poll();
-                        long right = operandQueue.poll();
-                        operandQueue.add(left / right);
-                        break;
-                    }
-                    case '%': {
-                        long left = operandQueue.poll();
-                        long right = operandQueue.poll();
-                        operandQueue.add(left / right);
-                        break;
-                    }
-                    case '+': {
-                        long left = operandQueue.poll();
-                        long right = operandQueue.poll();
-                        operandQueue.add(left / right);
-                        break;
-                    }
-                    case '-': {
-                        long left = operandQueue.poll();
-                        long right = operandQueue.poll();
-                        operandQueue.add(left / right);
-                        break;
-                    }
-                    default: throw new Exception("NOT WORKING: NOT ALLOWED OPERATOR REMAINS!");
                 }
 
             // Operand pops
             } else {
-                operandQueue.add(currElem.getOperand());
+                operandStack.push(currElem.getOperand());
             }
         }
+
+        if (operandStack.size() != 1)
+            throw new Exception("NOT WORKING: OPERAND REMAINS > 1");
+
+        long returnValue = operandStack.pop();
+
+        // for helping garbage collector.
+        operandStack = null;
+
+        return returnValue;
     }
 }
