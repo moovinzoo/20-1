@@ -93,28 +93,11 @@ public class Parsing {
             resultQueue.add(new Element(chunk));
         }
 
-//            // TODO: 2020/04/27 "Remove this, it's just for testing"
-//            /* NO NEED */
-//            if (isUnaryMinus && newElem.isOpertor()) {
-//                throw new Exception("It's time to set operand as negative, but, operator comes");
-//            }
-//            /* NO NEED */
-//
-//            // if isUnaryMinus is true, then, it's clear that newElem is operand
-//            // FIXME: 2020/04/27 "Is to be set in top needed?"
-//            if (isUnaryMinus) {
-//                newElem.makeOperandNegative();
-//                isUnaryMinus = false;
-//            }
-
-
         // Input string stored as chunked Element in returning queue.
         return resultQueue;
     }
 
 
-    // TODO: 2020/04/27 "Operator Stack과 Return Stack을 만들어두고 index를 하나씩 오른쪽으로 옮기면서 Operand가 나오면 그냥 바로 return에 push하고, Operator가 나왔을 때, top에 있는 친구와 priority를 비교해서 큰 애가 먼저 들어가있는 경우 pop시켜서 return에 넣어주면 간단하게 해결된다."
-    // TODO: 2020/04/27 "단지, 이 때에 top에 있는 애와 같은 priority를 가지는 경우 left-associative인지 right-associative인지가 중요한데 Element.compareTo()에서 0이 나오는 경우 자체에 대해 left/right에 맞게 아예 배정을 해버리면 편할 것 같다. 원칙적으로는 같을 때에 left면 꺼내고 right면 집어넣는 것인데 그것을 그냥 compareTo에 반영해버리는 것이 훨씬 간단할 듯, 단지 설명만 잘 써놓자".
     // Convert infix expression to postfix expression.
     public static Stack<Element> infixToPostfix(Queue<Element> infixQueue) throws Exception {
         Stack<Element> operatorStack = new Stack<>();
@@ -154,7 +137,7 @@ public class Parsing {
                     operatorStack.push(currElem);
                 }
 
-                // currElem is operand
+            // currElem is operand
             } else {
                 // When two operand wating in a row,
                 if (!infixQueue.peek().isOpertor())
