@@ -63,7 +63,7 @@ public class Element {
     public int compareTo(Element o) throws Exception{
         // TODO: 2020/04/27 "체크하려고 만든거니 나중에 지우자"
         if (!this.isOpertor() || !o.isOpertor()) {
-            System.out.println("Don't compare operand");
+            throw new Exception("NOT ALLOWED: COMPARING TWO OPERANDS");
         }
 
         if (o == null) return 1;
