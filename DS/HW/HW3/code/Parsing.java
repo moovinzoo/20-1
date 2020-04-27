@@ -1,8 +1,13 @@
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class Parsing {
+
+    private static final Pattern INTEGER_WITH_SPACES = Pattern.compile("[ \t]*[0-9]+[ \t]*");
 
     // FIXME: 2020/04/26 "이렇게하면 throw 되나?"
     public static Stack<Element> processInput(String input) throws Exception {
@@ -42,21 +47,42 @@ public class Parsing {
     }
 
 
+    // New version. using Patter&Matcher
     // Plent input strings into queue chunk by chunk, with some process.
     public static Queue<Element> parseString(String input) throws Exception{
         // Store parsed input string as class:Element in Queue considering unary '-'
 
         /* Processes = {"Removing spaces", "Determine each Type(enum) of chunks"} */
-        
-        // Remove all spaces & tab
-        input.replaceAll("[ \t]", "");
+
+        // Remove spaces from input string
+        input = SPACE_PATTERN.matcher(input).replaceAll("");
+
+        // TODO : Extract intStrings with sign
+        Matcher integerMatcher = INTEGER_WITH_SIGN.matcher(input);
+        StringBuffer sb = new StringBuffer();
+        int cnt = 1;
+        String intStr1 = null, intStr2 = null;
+        while (integerMatcher.find()) {
+            String tmp = integerMatcher.group(); // tmp ; 각각의 BigInteger 추출
+            if (tmp.charAt(0) >= '0' && tmp.charAt(0) <= '9') {
+                tmp = "+" + tmp;
+            }
+            if (cnt == 1) {
+                intStr1 = tmp;
+            } else {
+                intStr2 = tmp;
+            }
+            integerMatcher.appendReplacement(sb, "");
+            cnt++;
+        }
+        integerMatcher.appendTail(sb);
 
         // Tokenize input string by operator
         String[] parsedInput = input.split("[%^+*)(-]");
 //        boolean isUnaryMinus = false;
 
         // TODO: 2020/04/27 "1---2 가능한지 답변 확인한 후, 연속된 Unary case 검토여부 확정"
-        // TODO: 2020/04/27 "버려진 방법 : 0을 삽입하는 Algorithm을 적용해서 unary -를 미리 parsing한다" 
+        // TODO: 2020/04/27 "버려진 방법 : 0을 삽입하는 Algorithm을 적용해서 unary -를 미리 parsing한다"
         // By using FIFO property of queue, it is possible to maintain origin order of chunks.
         Queue<Element> resultQueue = new LinkedList<>();
         // For every chunkes,
@@ -78,7 +104,7 @@ public class Parsing {
                     throw new Exception("NOT ALLOWED : CONTINUOUS OPERATORS");
                 }
 
-            // For the case that starting with operator
+                // For the case that starting with operator
             } else if (resultQueue.isEmpty() && newElem.isOpertor()) {
                 if (newElem.getOperator() == '-') {
                     newElem.makeOperatorUnary();
@@ -96,6 +122,62 @@ public class Parsing {
         // Input string stored as chunked Element in returning queue.
         return resultQueue;
     }
+
+    // Old version.
+//    // Plent input strings into queue chunk by chunk, with some process.
+//    public static Queue<Element> parseString(String input) throws Exception{
+//        // Store parsed input string as class:Element in Queue considering unary '-'
+//
+//        /* Processes = {"Removing spaces", "Determine each Type(enum) of chunks"} */
+//
+//        // Remove all spaces & tab
+//        input.replaceAll("[ \t]", "");
+//
+//        // Tokenize input string by operator
+//        String[] parsedInput = input.split("[%^+*)(-]");
+////        boolean isUnaryMinus = false;
+//
+//        // TODO: 2020/04/27 "1---2 가능한지 답변 확인한 후, 연속된 Unary case 검토여부 확정"
+//        // TODO: 2020/04/27 "버려진 방법 : 0을 삽입하는 Algorithm을 적용해서 unary -를 미리 parsing한다"
+//        // By using FIFO property of queue, it is possible to maintain origin order of chunks.
+//        Queue<Element> resultQueue = new LinkedList<>();
+//        // For every chunkes,
+//        for (String chunk : parsedInput) {
+//            // Convert 'chunked string' as 'Element'.
+//            Element newElem = new Element(chunk);
+//
+//            // For continous operator cases,
+//            if (resultQueue.peek().isOpertor() && newElem.isOpertor()) {
+//                // 2nd operator is '-'
+//                if (newElem.getOperator() == '-') {
+//                    // Convert '-' to '~' to avoid confusing.
+//                    newElem.makeOperatorUnary();
+////                    isUnaryMinus = true;
+////                    continue;
+//
+//                } else {
+//                    // 2nd operator excluding '-' comes,
+//                    throw new Exception("NOT ALLOWED : CONTINUOUS OPERATORS");
+//                }
+//
+//            // For the case that starting with operator
+//            } else if (resultQueue.isEmpty() && newElem.isOpertor()) {
+//                if (newElem.getOperator() == '-') {
+//                    newElem.makeOperatorUnary();
+//
+//                } else if (newElem.getOperator() != '(') {
+//                    throw new Exception("NOT ALLOWED : STARTS WITH OPERATORS EXCEPT '(' or '-'");
+//
+//                }
+//            }
+//
+//            // Add to queue.
+//            resultQueue.add(new Element(chunk));
+//        }
+//
+//        // Input string stored as chunked Element in returning queue.
+//        return resultQueue;
+//    }
 
 
     // Convert infix expression to postfix expression.
