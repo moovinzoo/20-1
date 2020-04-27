@@ -66,6 +66,8 @@ public class Element {
             System.out.println("Don't compare operand");
         }
 
+        if (o == null) return 1;
+
         // Determine priority by covering all the cases
         // FIXME: 2020/04/27 "최대 비교 횟수가 8번이니까 평균적으로 4.5번 거치는 셈이라고 러프하게 보면 차라리 어레이 할당하는게 나으려나"
         char leftOpertor = this.getOperator();
@@ -78,13 +80,15 @@ public class Element {
         if (rightOperator == '(' || rightOperator == ')') return -1;
 
         if (leftOpertor == '^' || leftOpertor == '~') {
-            if (rightOperator == '^' || rightOperator == '~') return 0;
+            // ^, ~ is right-associative, return 1 for the same-priority case
+            if (rightOperator == '^' || rightOperator == '~') return 1;
             else return 1;
         }
         if (rightOperator == '^' || rightOperator == '~') return -1;
 
         if (leftOpertor == '*' || leftOpertor == '%' || leftOpertor == '/') {
-            if (rightOperator == '*' || rightOperator == '%' || rightOperator == '/') return 0;
+            // *, %, / are left-associative, return -1 for the same-priority case
+            if (rightOperator == '*' || rightOperator == '%' || rightOperator == '/') return -1;
             else return 1;
         }
         if (rightOperator == '*' || rightOperator == '%' || rightOperator == '/') return -1;
@@ -93,7 +97,8 @@ public class Element {
 
         /* NO NEED */
         if (leftOpertor == '+' || leftOpertor == '-') {
-            if (rightOperator == '+' || leftOpertor == '-') return 0;
+            // +, - are left-associative, return -1 for the same-priority case
+            if (rightOperator == '+' || leftOpertor == '-') return -1;
             else {
                 System.out.println("Operator comparing failed!");
             }
