@@ -60,7 +60,7 @@ public class Element {
         return this.operator;
     }
 
-    public int compareTo(Element o) {
+    public int compareTo(Element o) throws Exception{
         // TODO: 2020/04/27 "체크하려고 만든거니 나중에 지우자"
         if (!this.isOpertor() || !o.isOpertor()) {
             System.out.println("Don't compare operand");
@@ -79,12 +79,18 @@ public class Element {
         }
         if (rightOperator == '(' || rightOperator == ')') return -1;
 
-        if (leftOpertor == '^' || leftOpertor == '~') {
-            // ^, ~ is right-associative, return 1 for the same-priority case
-            if (rightOperator == '^' || rightOperator == '~') return 1;
+        if (leftOpertor == '^') {
+            if (rightOperator == '^') return -1;
             else return 1;
         }
-        if (rightOperator == '^' || rightOperator == '~') return -1;
+        if (rightOperator == '^') return -1;
+
+        if (leftOpertor == '~') {
+            // ~ is right-associative, return 1 for the same-priority case
+            if (rightOperator == '~') return 1;
+            else return 1;
+        }
+        if (rightOperator == '~') return -1;
 
         if (leftOpertor == '*' || leftOpertor == '%' || leftOpertor == '/') {
             // *, %, / are left-associative, return -1 for the same-priority case
@@ -95,21 +101,16 @@ public class Element {
 
         // FIXME: 2020/04/27 "ERROR HANDLING을 println으로 할지 throws로 할지 통일"
 
-        /* NO NEED */
+        // Only-left case is left:+/- & right:+/-
         if (leftOpertor == '+' || leftOpertor == '-') {
             // +, - are left-associative, return -1 for the same-priority case
             if (rightOperator == '+' || leftOpertor == '-') return -1;
             else {
-                System.out.println("Operator comparing failed!");
+                throw new Exception("NOT ALLOWED: FAILED TO PAIR OPERATOR");
             }
         }
 
-        System.out.println("Operator comparing failed!");
-        /* NO NEED */
-
-        // TODO: 2020/04/27 "하단부터는 주석처리된 코드로 충분하다. 왜냐하면 위에서 모든 케이스에 대해서 커버했기 때문에 그저 디버깅용"
-        // return 0; // Only-left case is left:+/- & right:+/-
-        return 0; // Only-left case is left:+/- & right:+/-
+        throw new Exception("NOT ALLOWED: FAILED TO PAIR OPERATOR");
     }
 
     public void makeOperandNegative() {
