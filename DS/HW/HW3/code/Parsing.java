@@ -12,10 +12,17 @@ public class Parsing {
     // FIXME: 2020/04/26 "이렇게하면 throw 되나?"
     public static Stack<Element> processInput(String input) throws Exception {
         try {
-            // For the first step of Parsing, check if input string contains NOT-allowed characters.
-            inputContainsWrong(input);
+            // Remove all the space/tab from input
+            input = removeSpaces(input);
+            /* Now, there's no spaces in input */
 
-            /* Now, it's clear that input string is pure(only contains allowed characters). */
+            // For the first step of Parsing, check if input string contains NOT-allowed characters.
+            testInputContainsWrong(input);
+            /* Now, it's clear that input only contains allowed characters. */
+
+            // Check if parentheses pairing well.
+            testParenthesesPairing(input);
+            /* Now, it's clear that parentheses match. */
 
             // Plent input strings into queue chunk by chunk, with some process.
             Queue<Element> infixQueue = parseString(input);
@@ -35,21 +42,37 @@ public class Parsing {
         }
     }
 
+    public static String removeSpaces(String input) {
+        return input.replaceAll("[ \t]*", "");
+    }
 
     // FIXME: 2020/04/27 "if문 throw new~ 관련하여 Exception class 하나 따로 만들어서 handling 할 것."
     // For the first step of Parsing, check if input string contains NOT-allowed characters.
-    public static void inputContainsWrong(String input) throws Exception {
+    public static void testInputContainsWrong(String input) throws Exception {
         // If input contains NOT-allowed characters, throws.
-        if (!input.matches("[0-9\t( )/%^+*)(-]*"))
+        if (!input.matches("[0-9/%^+*)(-]*"))
             throw new Exception("NOT ALLOWED : !CHARACTER EXSITS");
 
         /* Now, it is certain that input only contains allowed characters. */
     }
 
+    public static void testParenthesesPairing(String input) throws Exception {
+        int trackParentheses = 0;
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) == '(') trackParentheses++;
+            else if (input.charAt(i) == ')') trackParentheses--;
+        }
+
+        if (trackParentheses != 0) throw new Exception("NOT ALLOWED: PARENTHESIS DO NOT MATCH.");
+    }
 
     // New version. using Patter&Matcher
     // Plent input strings into queue chunk by chunk, with some process.
     public static Queue<Element> parseString(String input) throws Exception {
+        /* No spaces. */
+        /* No any NOT-ALLOWED characters. */
+        /* Parentheses match. */
+
         Queue<Element> resultQueue = new LinkedList<>();
         // Store parsed input string as class:Element in Queue considering unary '-'
 
@@ -66,22 +89,29 @@ public class Parsing {
             int currStart = operandMatcher.start();
             int currEnd = operandMatcher.end();
 
-            // Store 'operand with spaces' as string, with removing spaces.
+            // Current : [currOperator(String after preceding group)][currOperand(group)]
             String currOperator = input.substring(prevEnd, currStart);
-            String currOperand = operandMatcher.group().replaceAll("[ \t]*", "");
+            String currOperand = operandMatcher.group();
 
-            /* Current : [currOperator(String after preceding group)][currOperand(group)] */
-            
             // Test validity of operator chunk.
+            if (!currOperator.matches("[)]*[^*/%+-][-(]*") && !currOperator.matches("[^*/%+-][-(]*")) {
+                throw new Exception("NOT ALLOWED: INVALID OPERATOR");
+            }
+            boolean isValidOperatorPrecedes = false;
+            int trackingParentheses = 0;
+            for (int i = 0; i < currOperator.length(); i++) {
+                if (currOperator.charAt(i) == '(') {
+                    trackingParentheses++;
+                } else if (currOperator.charAt(i) == ')') {
+                    trackingParentheses--;
+                } else if (currOperator.charAt(i) == '-') {
+
+                }
+            }
 
             /* Now, operator chunk is valid */
 
             // Convert current operator to Element class instance and add it to Queue.
-            boolean isValidOperatorPrecedes = false;
-
-            for (int i = 0; i < currOperator.length(); i++) {
-
-            }
 
             // Convert current operand to Element class instance and add it to Queue.
             Element newOperand = new Element(currOperand);
@@ -109,7 +139,7 @@ public class Parsing {
             }
 
 
-            // TODO: 2020/04/28 "찌꺼기 처리" 
+            // TODO: 2020/04/28 "찌꺼기 처리"
 
             // Update the prev index of start & end.
             prevStart = currStart;
