@@ -76,6 +76,61 @@ public class Parsing {
         if (trackParentheses != 0) throw new Exception("NOT ALLOWED: PARENTHESIS DO NOT MATCH.");
     }
 
+    public static void processOperatorChunk() throws Exception {
+        // 1. If currOperatorChunk is the first one,
+        if (prevEnd == 0) {
+            if (currOperatorChunk.length() > 0) {
+                // Test for 2 only forms of first-operator-chunk.
+                if (!currOperatorChunk.matches("[-(]*")) {
+                    throw new Exception("NOT ALOWED: STARTS WITH INVALID OPERATOR");
+                }
+
+                for (char currOperator : currOperatorChunk.toCharArray()) {
+                    Element newElem;
+                    if (currOperator == '-') {
+                        newElem = new Element('~');
+                    } else {
+                        newElem = new Element('~');
+                    }
+
+                    resultQueue.add(newElem);
+                }
+            }
+
+            // 2. currOperatorChunk is not the first one,
+        } else {
+            // Test for 2 only forms of nth-operator-chunk (n>1).
+            if (!currOperatorChunk.matches("[)]*[^*/%+-][-(]*") && !currOperatorChunk.matches("[^*/%+-][-(]*")) {
+                throw new Exception("NOT ALLOWED: INVALID OPERATOR");
+            }
+            /* Now, operator chunk is valid */
+
+            // Unary conversion ; make excessible '-' to '~'.
+            boolean isValidOperatorPrecedes = false;
+            for (char currOperator : currOperatorChunk.toCharArray()) {
+                // Operator's validity already checked above, so there's no illegal operator duplication.
+                // So, the only case that multiple operator exists is '-'s after one operator ; conver them to '~'
+                Element newElem;
+
+                // Case1: First operator that belongs to {^, *, /, %, +, -} comes,
+                if (!isValidOperatorPrecedes && (""+currOperator).matches("[^*/%+-]")) {
+                    isValidOperatorPrecedes = true;
+                    newElem = new Element(currOperator);
+                    // Case2: '-' comes after another operator that belongs to {^, *, /, %, +, -}.
+                } else if (isValidOperatorPrecedes && (currOperator == '-')) {
+                    newElem = new Element('~');
+                    // Case3: case for (, ) comes
+                } else {
+                    newElem = new Element(currOperator);
+                }
+
+                resultQueue.add(newElem);
+            }
+
+        }
+
+    }
+
     // New version. using Patter&Matcher
     // Plent input strings into queue chunk by chunk, with some process.
     public static Queue<Element> parseString(String input) throws Exception {
@@ -90,7 +145,8 @@ public class Parsing {
         Queue<Element> resultQueue = new LinkedList<>();
 
         // Ready to find operands
-        final Pattern OPERAND_PATTERN = Pattern.compile("[-+]?[0-9]+");
+//        final Pattern OPERAND_PATTERN = Pattern.compile("[-+]?[0-9]+");
+        final Pattern OPERAND_PATTERN = Pattern.compile("[0-9]+");
         Matcher operandMatcher = OPERAND_PATTERN.matcher(input);
         int prevStart = -1;
         int prevEnd = 0;
@@ -101,117 +157,31 @@ public class Parsing {
             int currStart = operandMatcher.start();
             int currEnd = operandMatcher.end();
 
-            // Pick current [Operator(String after preceding group)][Operand(group)].
-            String currOperator = input.substring(prevEnd, currStart);
-            String currOperand = operandMatcher.group().replaceAll("[ \t]*", "");
+            // Set current variables; [Operator(String after preceding group)] precedes [Operand(group)].
+            String currOperand = operandMatcher.group();
+            String currOperatorChunk = input.substring(prevEnd, currStart);
 
-            // Test validity of [Operator] chunk.
-            // For empty queue,
-            if (prevEnd == 0) {
+            // Test validity of [Operator] chunk and add them in result Queue first.
 
-            // For non-empty queue
-            } else {
-                if (!currOperator.matches("[)]*[^*/%+-][-(]*") && !currOperator.matches("[^*/%+-][-(]*")) {
-                    throw new Exception("NOT ALLOWED: INVALID OPERATOR");
-                }
-                /* Now, operator chunk is valid */
-
-                boolean isValidOperatorPrecedes = false;
-                for (int i = 0; i < currOperator.length(); i++) {
-                    if(currOperator.charAt(i) == '(' || currOperator.charAt(i) == ')') {
-
-                    }
-                    if (currOperator.charAt(i) == '(') {
-                    } else if (currOperator.charAt(i) == ')') {
-                    } else if (currOperator.charAt(i) == '-') {
-
-                    }
-                }
-            }
-
-
-            // Convert current operator to Element class instance and add it to Queue.
+            /* Preceding [Operator] added in resultQueue */
 
             // Convert current operand to Element class instance and add it to Queue.
+            // No need to check; [Operator] that starts with "0-" excluding "0" never comes.
             Element newOperand = new Element(currOperand);
             resultQueue.add(newOperand);
 
-
-            // Process unary minus
-            if (currOperator.matches("[)]*[^*/%+-]{1}[-]*[(]*[-]*")) {
-
-            }
-
-            if (currOperator.length() == 1) {
-                if (currOperator.equals("(") || currOperator.equals(")")) {
-                    throw new Exception("NOT ALLOWED: SINGLE OPERATOR THAT ( OR ).");
-                }
-            } else if (currOperator.length() > 1) {
-                if (currOperator.startsWith("(")) {
-                    throw new Exception("NOT ALLOWED: MULTIPLE OPERATORS STARTS WITH (.");
-                } else if (currOperator.startsWith(")")) {
-                    if (!currOperator.matches("[)]+[^*/%+-]{1}[(]+[~]*"))
-                        throw new Exception("NOT ALLOWED: MULTIPLE OPERATORS STARTS WITH ) BUT RESTRICTED.");
-                }
-            } else {
-
-            }
-
-
-            // TODO: 2020/04/28 "찌꺼기 처리"
+            /* Following [Operand] added in resultQueue */
 
             // Update the prev index of start & end.
             prevStart = currStart;
             prevEnd = currEnd;
         }
-        
+
+        // TODO: 2020/04/28 "찌꺼기 처리"
+
         // Return
         return resultQueue;
     }
-            // Start
-//            if (prevEnd == 0) {
-//                if (currOperator.length() == 1) {
-//                    if (currOperator.equals("-")) {
-//                       currOperator = "~";
-//
-//                    } else {
-//                        if (!currOperator.equals("("))
-//                            throw new Exception("NOT ALLOWED: STARTS WITH OPERATOR EXCEPT (, -");
-//
-//                    }
-//
-//                } else if (currOperator.length() == ) {
-//
-//                }
-//            }
-
-
-//            }
-//            } else if (currStart - prevEnd == 0) {
-//
-//            }
-
-
-        // Tokenize input string by operator
-        // By using FIFO property of queue, it is possible to maintain origin order of chunks.
-        // For every chunkes,
-            // Convert 'chunked string' as 'Element'.
-            // For continous operator cases,
-                // 2nd operator is '-'
-                    // Convert '-' to '~' to avoid confusing.
-                    // 2nd operator excluding '-' comes,
-                // For the case that starting with operator
-            // Add to queue.
-        // Input string stored as chunked Element in returning queue.
-
-
-
-
-
-
-
-
-
 
 
 
