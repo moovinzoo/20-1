@@ -39,9 +39,12 @@ public class Parsing {
             return postfixStack;
 
         } catch (Exception e) {
+            // FIXME: 2020/04/27 "if문 throw new~ 관련하여 Exception class 하나 따로 만들어서 handling 할 것."
             throw e;
         }
     }
+
+
     public static void testSpacesBetweenOperands(String input) throws Exception{
         // Check if there exist invalid chunk like [operand][spaces][operand].
         if (!input.matches("[0-9]+[ \t]+[0-9]+"))
@@ -53,14 +56,11 @@ public class Parsing {
         return input.replaceAll("[ \t]*", "");
     }
 
-    // FIXME: 2020/04/27 "if문 throw new~ 관련하여 Exception class 하나 따로 만들어서 handling 할 것."
     // For the first step of Parsing, check if input string contains NOT-allowed characters.
     public static void testInputContainsWrong(String input) throws Exception {
         // If input contains NOT-allowed characters, throws.
         if (!input.matches("[0-9/%^+*)(-]*"))
             throw new Exception("NOT ALLOWED : ~(CHARACTER SET) EXSITS");
-
-        /* Now, it is certain that input only contains allowed characters. */
     }
 
     public static void testParenthesesPairing(String input) throws Exception {
@@ -68,6 +68,9 @@ public class Parsing {
         for (int i = 0; i < input.length(); i++) {
             if (input.charAt(i) == '(') trackParentheses++;
             else if (input.charAt(i) == ')') trackParentheses--;
+
+            // When trackParentheses ever goes negative, ERROR
+            if (trackParentheses < 0) throw new Exception("NOT ALLOWED: PARENTHESIS CLOSED BEFORE OPEN.");
         }
 
         if (trackParentheses != 0) throw new Exception("NOT ALLOWED: PARENTHESIS DO NOT MATCH.");
@@ -86,41 +89,46 @@ public class Parsing {
         // By using FIFO property of queue, it is possible to maintain origin order of chunks.
         Queue<Element> resultQueue = new LinkedList<>();
 
-        // Extract operands with spaces
-        Matcher operandMatcher = OPERAND_WITH_SPACES.matcher(input);
+        // Ready to find operands
+        final Pattern OPERAND_PATTERN = Pattern.compile("[-+]?[0-9]+");
+        Matcher operandMatcher = OPERAND_PATTERN.matcher(input);
         int prevStart = -1;
         int prevEnd = 0;
 
-        // Until there's more operand(with spaces back and forth)
+        // Until there's more operand
         while (operandMatcher.find()) {
             // Renew the current index of start & end.
             int currStart = operandMatcher.start();
             int currEnd = operandMatcher.end();
 
-            // TODO: 2020/04/28 "숫자사이 공백 없는거 확실할때만 아래와같이"
-            // Store 'operand with spaces' as string, with removing spaces.
+            // Pick current [Operator(String after preceding group)][Operand(group)].
             String currOperator = input.substring(prevEnd, currStart);
             String currOperand = operandMatcher.group().replaceAll("[ \t]*", "");
 
-            /* Current : [currOperator(String after preceding group)][currOperand(group)] */
+            // Test validity of [Operator] chunk.
+            // For empty queue,
+            if (prevEnd == 0) {
 
-            // Test validity of operator chunk.
-            if (!currOperator.matches("[)]*[^*/%+-][-(]*") && !currOperator.matches("[^*/%+-][-(]*")) {
-                throw new Exception("NOT ALLOWED: INVALID OPERATOR");
-            }
-            boolean isValidOperatorPrecedes = false;
-            int trackingParentheses = 0;
-            for (int i = 0; i < currOperator.length(); i++) {
-                if (currOperator.charAt(i) == '(') {
-                    trackingParentheses++;
-                } else if (currOperator.charAt(i) == ')') {
-                    trackingParentheses--;
-                } else if (currOperator.charAt(i) == '-') {
+            // For non-empty queue
+            } else {
+                if (!currOperator.matches("[)]*[^*/%+-][-(]*") && !currOperator.matches("[^*/%+-][-(]*")) {
+                    throw new Exception("NOT ALLOWED: INVALID OPERATOR");
+                }
+                /* Now, operator chunk is valid */
 
+                boolean isValidOperatorPrecedes = false;
+                for (int i = 0; i < currOperator.length(); i++) {
+                    if(currOperator.charAt(i) == '(' || currOperator.charAt(i) == ')') {
+
+                    }
+                    if (currOperator.charAt(i) == '(') {
+                    } else if (currOperator.charAt(i) == ')') {
+                    } else if (currOperator.charAt(i) == '-') {
+
+                    }
                 }
             }
 
-            /* Now, operator chunk is valid */
 
             // Convert current operator to Element class instance and add it to Queue.
 
