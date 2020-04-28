@@ -7,11 +7,13 @@ import java.util.regex.Pattern;
 
 public class Parsing {
 
-    private static final Pattern OPERAND_WITH_SPACES = Pattern.compile("[ \t]*[0-9]+[ \t]*");
-
     // FIXME: 2020/04/26 "이렇게하면 throw 되나?"
     public static Stack<Element> processInput(String input) throws Exception {
         try {
+            // Check if there exist invalid chunk like [operand][spaces][operand].
+            testSpacesBetweenOperands(input);
+            /* Now, can remove spaces */
+
             // Remove all the space/tab from input
             input = removeSpaces(input);
             /* Now, there's no spaces in input */
@@ -26,7 +28,6 @@ public class Parsing {
 
             // Plent input strings into queue chunk by chunk, with some process.
             Queue<Element> infixQueue = parseString(input);
-
             /* Now, input string processed chunks-level and stored as Element in parsedString(queue). */
 
             // Convert infix expression to postfix expression.
@@ -41,8 +42,14 @@ public class Parsing {
             throw e;
         }
     }
+    public static void testSpacesBetweenOperands(String input) throws Exception{
+        // Check if there exist invalid chunk like [operand][spaces][operand].
+        if (!input.matches("[0-9]+[ \t]+[0-9]+"))
+            throw new Exception("NOT ALLOWED : SPACE BETWEEN OPERANDS");
+    }
 
     public static String removeSpaces(String input) {
+        // Remove all space/tab by replacing method.
         return input.replaceAll("[ \t]*", "");
     }
 
@@ -51,7 +58,7 @@ public class Parsing {
     public static void testInputContainsWrong(String input) throws Exception {
         // If input contains NOT-allowed characters, throws.
         if (!input.matches("[0-9/%^+*)(-]*"))
-            throw new Exception("NOT ALLOWED : !CHARACTER EXSITS");
+            throw new Exception("NOT ALLOWED : ~(CHARACTER SET) EXSITS");
 
         /* Now, it is certain that input only contains allowed characters. */
     }
@@ -73,10 +80,11 @@ public class Parsing {
         /* No any NOT-ALLOWED characters. */
         /* Parentheses match. */
 
-        Queue<Element> resultQueue = new LinkedList<>();
         // Store parsed input string as class:Element in Queue considering unary '-'
-
         /* Processes = {"Removing spaces", "Determine each Type(enum) of chunks"} */
+
+        // By using FIFO property of queue, it is possible to maintain origin order of chunks.
+        Queue<Element> resultQueue = new LinkedList<>();
 
         // Extract operands with spaces
         Matcher operandMatcher = OPERAND_WITH_SPACES.matcher(input);
@@ -89,9 +97,12 @@ public class Parsing {
             int currStart = operandMatcher.start();
             int currEnd = operandMatcher.end();
 
-            // Current : [currOperator(String after preceding group)][currOperand(group)]
+            // TODO: 2020/04/28 "숫자사이 공백 없는거 확실할때만 아래와같이"
+            // Store 'operand with spaces' as string, with removing spaces.
             String currOperator = input.substring(prevEnd, currStart);
-            String currOperand = operandMatcher.group();
+            String currOperand = operandMatcher.group().replaceAll("[ \t]*", "");
+
+            /* Current : [currOperator(String after preceding group)][currOperand(group)] */
 
             // Test validity of operator chunk.
             if (!currOperator.matches("[)]*[^*/%+-][-(]*") && !currOperator.matches("[^*/%+-][-(]*")) {
