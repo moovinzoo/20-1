@@ -49,7 +49,8 @@ public class Parsing {
 
     // New version. using Patter&Matcher
     // Plent input strings into queue chunk by chunk, with some process.
-    public static Queue<Element> parseString(String input) throws Exception{
+    public static Queue<Element> parseString(String input) throws Exception {
+        Queue<Element> resultQueue = new LinkedList<>();
         // Store parsed input string as class:Element in Queue considering unary '-'
 
         /* Processes = {"Removing spaces", "Determine each Type(enum) of chunks"} */
@@ -61,95 +62,111 @@ public class Parsing {
 
         // Until there's more operand(with spaces back and forth)
         while (operandMatcher.find()) {
-            // Store 'operand with spaces' as string, with removing spaces.
-            String currOperand = operandMatcher.group().replaceAll("[ \t]*", "");
+            // Renew the current index of start & end.
             int currStart = operandMatcher.start();
             int currEnd = operandMatcher.end();
 
-            // First search
-//            if (prevEnd == currStart) { // Not happening
+            // Store 'operand with spaces' as string, with removing spaces.
+            String currOperator = input.substring(prevEnd, currStart);
+            String currOperand = operandMatcher.group().replaceAll("[ \t]*", "");
 
+            /* Current : [currOperator(String after preceding group)][currOperand(group)] */
+            
+            // Test validity of operator chunk.
+
+            /* Now, operator chunk is valid */
+
+            // Convert current operator to Element class instance and add it to Queue.
+            boolean isValidOperatorPrecedes = false;
+
+            for (int i = 0; i < currOperator.length(); i++) {
 
             }
 
+            // Convert current operand to Element class instance and add it to Queue.
+            Element newOperand = new Element(currOperand);
+            resultQueue.add(newOperand);
 
 
-            StringBuffer sb = new StringBuffer();
+            // Process unary minus
+            if (currOperator.matches("[)]*[^*/%+-]{1}[-]*[(]*[-]*")) {
 
-            // Store space-removed String type operand as Element class
-
-        }
-
-
-
-
-
-
-        StringBuffer sb = new StringBuffer();
-        int cnt = 1;
-        String intStr1 = null, intStr2 = null;
-        while (integerMatcher.find()) {
-            String tmp = integerMatcher.group(); // tmp ; 각각의 BigInteger 추출
-            if (tmp.charAt(0) >= '0' && tmp.charAt(0) <= '9') {
-                tmp = "+" + tmp;
             }
-            if (cnt == 1) {
-                intStr1 = tmp;
+
+            if (currOperator.length() == 1) {
+                if (currOperator.equals("(") || currOperator.equals(")")) {
+                    throw new Exception("NOT ALLOWED: SINGLE OPERATOR THAT ( OR ).");
+                }
+            } else if (currOperator.length() > 1) {
+                if (currOperator.startsWith("(")) {
+                    throw new Exception("NOT ALLOWED: MULTIPLE OPERATORS STARTS WITH (.");
+                } else if (currOperator.startsWith(")")) {
+                    if (!currOperator.matches("[)]+[^*/%+-]{1}[(]+[~]*"))
+                        throw new Exception("NOT ALLOWED: MULTIPLE OPERATORS STARTS WITH ) BUT RESTRICTED.");
+                }
             } else {
-                intStr2 = tmp;
-            }
-            integerMatcher.appendReplacement(sb, "");
-            cnt++;
-        }
-        integerMatcher.appendTail(sb);
 
-        // Tokenize input string by operator
-        String[] parsedInput = input.split("[%^+*)(-]");
-//        boolean isUnaryMinus = false;
-
-        // TODO: 2020/04/27 "1---2 가능한지 답변 확인한 후, 연속된 Unary case 검토여부 확정"
-        // TODO: 2020/04/27 "버려진 방법 : 0을 삽입하는 Algorithm을 적용해서 unary -를 미리 parsing한다"
-        // By using FIFO property of queue, it is possible to maintain origin order of chunks.
-        Queue<Element> resultQueue = new LinkedList<>();
-        // For every chunkes,
-        for (String chunk : parsedInput) {
-            // Convert 'chunked string' as 'Element'.
-            Element newElem = new Element(chunk);
-
-            // For continous operator cases,
-            if (resultQueue.peek().isOpertor() && newElem.isOpertor()) {
-                // 2nd operator is '-'
-                if (newElem.getOperator() == '-') {
-                    // Convert '-' to '~' to avoid confusing.
-                    newElem.makeOperatorUnary();
-//                    isUnaryMinus = true;
-//                    continue;
-
-                } else {
-                    // 2nd operator excluding '-' comes,
-                    throw new Exception("NOT ALLOWED : CONTINUOUS OPERATORS");
-                }
-
-                // For the case that starting with operator
-            } else if (resultQueue.isEmpty() && newElem.isOpertor()) {
-                if (newElem.getOperator() == '-') {
-                    newElem.makeOperatorUnary();
-
-                } else if (newElem.getOperator() != '(') {
-                    throw new Exception("NOT ALLOWED : STARTS WITH OPERATORS EXCEPT '(' or '-'");
-
-                }
             }
 
-            // Add to queue.
-            resultQueue.add(new Element(chunk));
-        }
 
-        // Input string stored as chunked Element in returning queue.
+            // TODO: 2020/04/28 "찌꺼기 처리" 
+
+            // Update the prev index of start & end.
+            prevStart = currStart;
+            prevEnd = currEnd;
+        }
+        
+        // Return
         return resultQueue;
     }
+            // Start
+//            if (prevEnd == 0) {
+//                if (currOperator.length() == 1) {
+//                    if (currOperator.equals("-")) {
+//                       currOperator = "~";
+//
+//                    } else {
+//                        if (!currOperator.equals("("))
+//                            throw new Exception("NOT ALLOWED: STARTS WITH OPERATOR EXCEPT (, -");
+//
+//                    }
+//
+//                } else if (currOperator.length() == ) {
+//
+//                }
+//            }
 
-    // Old version.
+
+//            }
+//            } else if (currStart - prevEnd == 0) {
+//
+//            }
+
+
+        // Tokenize input string by operator
+        // By using FIFO property of queue, it is possible to maintain origin order of chunks.
+        // For every chunkes,
+            // Convert 'chunked string' as 'Element'.
+            // For continous operator cases,
+                // 2nd operator is '-'
+                    // Convert '-' to '~' to avoid confusing.
+                    // 2nd operator excluding '-' comes,
+                // For the case that starting with operator
+            // Add to queue.
+        // Input string stored as chunked Element in returning queue.
+
+
+
+
+
+
+
+
+
+
+
+
+                // Old version.
 //    // Plent input strings into queue chunk by chunk, with some process.
 //    public static Queue<Element> parseString(String input) throws Exception{
 //        // Store parsed input string as class:Element in Queue considering unary '-'
