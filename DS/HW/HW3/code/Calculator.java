@@ -3,6 +3,7 @@ import jdk.jshell.spi.ExecutionControl;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.function.ToDoubleBiFunction;
 
 public class Calculator {
     public static long calculate(Stack<Element> postfixStack) throws Exception {
@@ -28,6 +29,8 @@ public class Calculator {
                     operandStack.push(toNegative * (-1));
 
                 } else {
+                    // TODO: 2020/04/29 "pop시 ERROR"
+                    // FIXME: 2020/04/29 "FROM HERE!!!"
                     long right = operandStack.pop();
                     long left = operandStack.pop();
                     if (currOperator == '*') {
