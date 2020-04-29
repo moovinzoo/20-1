@@ -60,7 +60,6 @@ public class Parsing {
     // For the first step of Parsing, check if input string contains NOT-allowed characters.
     public static void testInputContainsWrong(String input) throws Exception {
         // If input contains NOT-allowed characters, throws.
-//        if (!input.matches("[0-9/%^+*)(-]*"))
         if (!input.matches("[0-9" + CALCULATING_PATTERN + "\\)\\(]*"))
             throw new Exception("NOT ALLOWED : ~(CHARACTER SET) EXSITS");
     }
@@ -79,7 +78,6 @@ public class Parsing {
     }
 
 
-    // New version. using Patter&Matcher
     // Plent input strings into queue chunk by chunk, with some process.
     public static Queue<Element> parseString(String input) throws Exception {
         /* No spaces. */
@@ -93,7 +91,6 @@ public class Parsing {
         Queue<Element> resultQueue = new LinkedList<>();
 
         // Ready to find operands
-//        final Pattern OPERAND_PATTERN = Pattern.compile("[-+]?[0-9]+");
         final Pattern OPERAND_PATTERN = Pattern.compile("[0-9]+");
         Matcher operandMatcher = OPERAND_PATTERN.matcher(input);
         int prevStart = -1;
@@ -189,10 +186,10 @@ public class Parsing {
                 if (!isValidOperatorPrecedes && (""+currOperator).matches("[" + CALCULATING_PATTERN + "]")) {
                     isValidOperatorPrecedes = true;
                     newElem = new Element(currOperator);
-                    // Case2: '-' comes after another operator that belongs to {^, *, /, %, +, -}.
+                // Case2: '-' comes after another operator that belongs to {^, *, /, %, +, -}.
                 } else if (isValidOperatorPrecedes && (currOperator == '-')) {
                     newElem = new Element('~');
-                    // Case3: case for (, ) comes
+                // Case3: case for (, ) comes
                 } else {
                     newElem = new Element(currOperator);
                 }
@@ -208,62 +205,6 @@ public class Parsing {
         Element newOperand = new Element(Long.parseLong(operand));
         infixQueue.add(newOperand);
     }
-
-    // Old version.
-//    // Plent input strings into queue chunk by chunk, with some process.
-//    public static Queue<Element> parseString(String input) throws Exception{
-//        // Store parsed input string as class:Element in Queue considering unary '-'
-//
-//        /* Processes = {"Removing spaces", "Determine each Type(enum) of chunks"} */
-//
-//        // Remove all spaces & tab
-//        input.replaceAll("[ \t]", "");
-//
-//        // Tokenize input string by operator
-//        String[] parsedInput = input.split("[%^+*)(-]");
-////        boolean isUnaryMinus = false;
-//
-//        // TODO: 2020/04/27 "1---2 가능한지 답변 확인한 후, 연속된 Unary case 검토여부 확정"
-//        // TODO: 2020/04/27 "버려진 방법 : 0을 삽입하는 Algorithm을 적용해서 unary -를 미리 parsing한다"
-//        // By using FIFO property of queue, it is possible to maintain origin order of chunks.
-//        Queue<Element> resultQueue = new LinkedList<>();
-//        // For every chunkes,
-//        for (String chunk : parsedInput) {
-//            // Convert 'chunked string' as 'Element'.
-//            Element newElem = new Element(chunk);
-//
-//            // For continous operator cases,
-//            if (resultQueue.peek().isOpertor() && newElem.isOpertor()) {
-//                // 2nd operator is '-'
-//                if (newElem.getOperator() == '-') {
-//                    // Convert '-' to '~' to avoid confusing.
-//                    newElem.makeOperatorUnary();
-////                    isUnaryMinus = true;
-////                    continue;
-//
-//                } else {
-//                    // 2nd operator excluding '-' comes,
-//                    throw new Exception("NOT ALLOWED : CONTINUOUS OPERATORS");
-//                }
-//
-//            // For the case that starting with operator
-//            } else if (resultQueue.isEmpty() && newElem.isOpertor()) {
-//                if (newElem.getOperator() == '-') {
-//                    newElem.makeOperatorUnary();
-//
-//                } else if (newElem.getOperator() != '(') {
-//                    throw new Exception("NOT ALLOWED : STARTS WITH OPERATORS EXCEPT '(' or '-'");
-//
-//                }
-//            }
-//
-//            // Add to queue.
-//            resultQueue.add(new Element(chunk));
-//        }
-//
-//        // Input string stored as chunked Element in returning queue.
-//        return resultQueue;
-//    }
 
 
     // Convert infix expression to postfix expression.
@@ -307,11 +248,8 @@ public class Parsing {
 
             // currElem is operand
             } else {
-//                // When two operand wating in a row,
-//                if (!infixQueue.peek().isOpertor())
-//                    throw new Exception("NOT ALLOWED : CONTINUOUS OPERANDS");
+                // ERROR already handled in advance.
                 postfixQueue.add(currElem);
-
             }
         }
 

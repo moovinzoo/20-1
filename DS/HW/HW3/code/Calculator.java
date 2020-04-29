@@ -27,8 +27,6 @@ public class Calculator {
                     operandStack.push(toNegative * (-1));
 
                 } else {
-                    // TODO: 2020/04/29 "pop시 ERROR"
-                    // FIXME: 2020/04/29 "FROM HERE!!!"
                     long right = operandStack.pop();
                     long left = operandStack.pop();
                     if (currOperator == '*') {

@@ -11,13 +11,15 @@ public class Calculator {
             // Pop one element on the top.
             Element currElem = postfixStack.poll();
 
-            // Operator pops
+            // Operator pops.
             if (currElem.isOpertor()) {
                 char currOperator = currElem.getOperator();
 
                 if (currOperator == '^') {
                     long exponent = operandStack.pop();
                     long base = operandStack.pop();
+                    // Prepare the ERROR case.
+                    if ((base == 0) && (exponent < 0)) throw new Exception("NOT ALLOWED: OPERATION NOT DEFINED!");
                     operandStack.push((long)Math.pow(base, exponent));
 
                 } else if (currOperator == '~') {
@@ -25,15 +27,17 @@ public class Calculator {
                     operandStack.push(toNegative * (-1));
 
                 } else {
-                    // TODO: 2020/04/29 "pop시 ERROR"
-                    // FIXME: 2020/04/29 "FROM HERE!!!"
                     long right = operandStack.pop();
                     long left = operandStack.pop();
                     if (currOperator == '*') {
                         operandStack.push(left * right);
                     } else if (currOperator == '%') {
+                        // Prepare the ERROR case.
+                        if (right == 0) throw new Exception("NOT ALLOWED: OPERATION NOT DEFINED!");
                         operandStack.push(left % right);
                     } else if (currOperator == '/') {
+                        // Prepare the ERROR case.
+                        if (right == 0) throw new Exception("NOT ALLOWED: OPERATION NOT DEFINED!");
                         operandStack.push(left / right);
                     } else if (currOperator == '+') {
                         operandStack.push(left + right);
