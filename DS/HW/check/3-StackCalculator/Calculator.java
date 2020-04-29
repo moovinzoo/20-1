@@ -40,7 +40,7 @@ public class Calculator {
                     } else if (currOperator == '-') {
                         operandStack.push(left - right);
                     } else {
-                        throw new Exception("NOT WORKING: NOT ALLOWED OPERATOR REMAINS!");
+                        throw new Exception("ERROR");
                     }
                 }
 
@@ -51,7 +51,7 @@ public class Calculator {
         }
 
         if (operandStack.size() != 1)
-            throw new Exception("NOT WORKING: OPERAND REMAINS > 1");
+            throw new Exception("ERROR");
 
         long returnValue = operandStack.pop();
 

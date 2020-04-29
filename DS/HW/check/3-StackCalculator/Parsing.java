@@ -49,7 +49,7 @@ public class Parsing {
     public static void testSpacesBetweenOperands(String input) throws Exception{
         // Check if there exist invalid chunk like [operand][spaces][operand].
         if (input.matches("[0-9]+[ \t]+[0-9]+"))
-            throw new Exception("NOT ALLOWED : SPACE BETWEEN OPERANDS");
+            throw new Exception("ERROR");
     }
 
     public static String removeSpaces(String input) {
@@ -62,7 +62,7 @@ public class Parsing {
         // If input contains NOT-allowed characters, throws.
 //        if (!input.matches("[0-9/%^+*)(-]*"))
         if (!input.matches("[0-9" + CALCULATING_PATTERN + "\\)\\(]*"))
-            throw new Exception("NOT ALLOWED : ~(CHARACTER SET) EXSITS");
+            throw new Exception("ERROR");
     }
 
     public static void testParenthesesPairing(String input) throws Exception {
@@ -72,10 +72,10 @@ public class Parsing {
             else if (input.charAt(i) == ')') trackParentheses--;
 
             // When trackParentheses ever goes negative, ERROR
-            if (trackParentheses < 0) throw new Exception("NOT ALLOWED: PARENTHESIS CLOSED BEFORE OPEN.");
+            if (trackParentheses < 0) throw new Exception("ERROR");
         }
 
-        if (trackParentheses != 0) throw new Exception("NOT ALLOWED: PARENTHESIS DO NOT MATCH.");
+        if (trackParentheses != 0) throw new Exception("ERROR");
     }
 
 
@@ -133,7 +133,7 @@ public class Parsing {
             // It should only be "))...)"
             String lastOperatorChunk = input.substring(prevEnd);
             if (!lastOperatorChunk.matches("[\\)]+")) {
-               throw new Exception("NOT ALLOWED: ENDS WITH ILLEGAL OPERATORS");
+               throw new Exception("ERROR");
             }
 
             for (char currOperator : lastOperatorChunk.toCharArray()) {
@@ -155,7 +155,7 @@ public class Parsing {
             if (operatorChunk.length() > 0) {
                 // Test for 2 only forms of first-operator-chunk.
                 if (!operatorChunk.matches("[\\-\\(]*")) {
-                    throw new Exception("NOT ALOWED: STARTS WITH INVALID OPERATOR");
+                    throw new Exception("ERROR");
                 }
 
                 for (char currOperator : operatorChunk.toCharArray()) {
@@ -174,7 +174,7 @@ public class Parsing {
         } else {
             // Test for 2 only forms of nth-operator-chunk (n>1).
             if (!operatorChunk.matches("[\\)]*" + "[" + CALCULATING_PATTERN + "]" + "[\\-\\(]*") && !operatorChunk.matches("[" + CALCULATING_PATTERN + "]" + "[\\-\\(]*")) {
-                throw new Exception("NOT ALLOWED: INVALID OPERATOR");
+                throw new Exception("ERROR");
             }
             /* Now, operator chunk is valid */
 
@@ -286,7 +286,7 @@ public class Parsing {
 
                     // When finding '(' ends without success
                     if (operatorStack.isEmpty())
-                        throw new Exception("NOT ALLOWED : FAILED TO FIND PAIR OF ')'");
+                        throw new Exception("ERROR");
 
                     // Pop '(' without storing.
                     operatorStack.pop();

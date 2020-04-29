@@ -19,7 +19,8 @@ public class CalculatorTest
 			}
 			catch (Exception e)
 			{
-				System.out.println("입력이 잘못되었습니다. 오류 : " + e.toString());
+//				System.out.println("입력이 잘못되었습니다. 오류 : " + e.toString());
+				System.out.println("ERROR");
 			}
 		}
 	}
