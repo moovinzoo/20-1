@@ -33,6 +33,8 @@ public class Calculator {
                     // FIXME: 2020/04/29 "FROM HERE!!!"
                     long right = operandStack.pop();
                     long left = operandStack.pop();
+//                    long right = operandStack.pop();
+//                    long left = operandStack.pop();
                     if (currOperator == '*') {
                         operandStack.push(left * right);
                     } else if (currOperator == '%') {
