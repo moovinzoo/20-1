@@ -1,9 +1,5 @@
-import jdk.jshell.spi.ExecutionControl;
-
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
-import java.util.function.ToDoubleBiFunction;
 
 public class Calculator {
     public static long calculate(Queue<Element> postfixStack) throws Exception {

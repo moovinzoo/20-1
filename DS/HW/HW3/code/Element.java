@@ -31,6 +31,7 @@ public class Element {
         this.operator = _operator;
     }
 
+    /* NO NEED */
 //     Constructor that needs to determine
 //    public Element(String chunkWithNoSpaces) {
 //
@@ -48,6 +49,7 @@ public class Element {
 //            this.operator = chunkWithNoSpaces.charAt(0);
 //        }
 //    }
+    /* NO NEED */
 
     // Prevent name corruption between member variable and method
     public boolean isOpertor() {
