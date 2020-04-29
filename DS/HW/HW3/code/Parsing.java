@@ -280,7 +280,7 @@ public class Parsing {
                 // operator is closing parenthesis
                 if (currElem.getOperator() == ')') {
                     // Pop all the stored operators and push to the postfixStack until '('
-                    while (operatorStack.peek().getOperator() != '(' || !operatorStack.isEmpty()) {
+                    while (operatorStack.peek().getOperator() != '(' && !operatorStack.isEmpty()) {
                         postfixQueue.add(operatorStack.pop());
                     }
 

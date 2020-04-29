@@ -78,11 +78,14 @@ public class Element {
         char leftOpertor = this.getOperator();
         char rightOperator = o.getOperator();
 
-        if (leftOpertor == '(' || leftOpertor == ')') {
-            if (rightOperator == '(' || rightOperator == ')') return 0;
-            else return 1;
-        }
-        if (rightOperator == '(' || rightOperator == ')') return -1;
+        // 들어갈 때, '('compareTo('+')
+        if (leftOpertor == '(') return 1;
+        // 뺄 떄 +.compareTo('(');
+        if (rightOperator == '(') return 1;
+//        if (leftOpertor == '(' || leftOpertor == ')') { if (rightOperator == '(' || rightOperator == ')') return 0;
+//            else return 1;
+//        }
+//        if (rightOperator == '(' || rightOperator == ')') return -1;
 
         if (leftOpertor == '^') {
             // ^ is right-associative, return 1 for the same-priority case
