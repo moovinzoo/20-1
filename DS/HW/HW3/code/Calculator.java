@@ -11,10 +11,11 @@ public class Calculator {
             // Pop one element on the top.
             Element currElem = postfixStack.poll();
 
-            // Operator pops.
+            // 1. Operator poped.
             if (currElem.isOpertor()) {
                 char currOperator = currElem.getOperator();
 
+                // 1) For whom has special operating order/way.
                 if (currOperator == '^') {
                     long exponent = operandStack.pop();
                     long base = operandStack.pop();
@@ -26,6 +27,7 @@ public class Calculator {
                     long toNegative = operandStack.pop();
                     operandStack.push(toNegative * (-1));
 
+                // 2) For whom has ordinary operating order
                 } else {
                     long right = operandStack.pop();
                     long left = operandStack.pop();
@@ -48,15 +50,17 @@ public class Calculator {
                     }
                 }
 
-            // Operand pops
+            // 2. Operand poped.
             } else {
                 operandStack.push(currElem.getOperand());
             }
         }
 
+        // operandStack should've been empty.
         if (operandStack.size() != 1)
             throw new Exception("NOT WORKING: OPERAND REMAINS > 1");
 
+        // Final value of operandStack is the result of calculation.
         long returnValue = operandStack.pop();
 
         // for helping garbage collector.

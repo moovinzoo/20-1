@@ -6,43 +6,32 @@ import java.util.regex.Pattern;
 
 
 public class Parsing {
+
     public static final String CALCULATING_PATTERN = "\\^\\*\\/\\%\\+\\-";
 
-    // FIXME: 2020/04/26 "이렇게하면 throw 되나?"
     public static Queue<Element> processInput(String input) throws Exception {
-        try {
-            // Check if there exist invalid chunk like [operand][spaces][operand].
-            testSpacesBetweenOperands(input);
-            /* Now, can remove spaces */
+        // Check if there exist invalid chunk like [operand][spaces][operand].
+        testSpacesBetweenOperands(input);
+        /* Now, can remove spaces */
 
-            // Remove all the space/tab from input
-            input = removeSpaces(input);
-            /* Now, there's no spaces in input */
+        // Remove all the space/tab from input
+        input = removeSpaces(input);
+        /* Now, there's no spaces in input */
 
-            // For the first step of Parsing, check if input string contains NOT-allowed characters.
-            testInputContainsWrong(input);
-            /* Now, it's clear that input only contains allowed characters. */
+        // For the first step of Parsing, check if input string contains NOT-allowed characters.
+        testInputContainsWrong(input);
+        /* Now, it's clear that input only contains allowed characters. */
 
-            // Check if parentheses pairing well.
-            testParenthesesPairing(input);
-            /* Now, it's clear that parentheses match. */
+        // Check if parentheses pairing well.
+        testParenthesesPairing(input);
+        /* Now, it's clear that parentheses match. */
 
-            // Plent input strings into queue chunk by chunk, with some process.
-            Queue<Element> infixQueue = parseString(input);
-            /* Now, input string processed chunks-level and stored as Element in parsedString(queue). */
+        // Plent input strings into queue chunk by chunk, with some process.
+        Queue<Element> infixQueue = parseString(input);
+        /* Now, input string processed chunks-level and stored as Element in parsedString(queue). */
 
-            // Convert infix expression to postfix expression.
-            Queue<Element> postfixQueue = infixToPostfix(infixQueue);
-
-            /* Now, input string processed chunks-level and stored as Element in parsedString(queue). */
-
-            // Return converted stack as result.
-            return postfixQueue;
-
-        } catch (Exception e) {
-            // FIXME: 2020/04/27 "if문 throw new~ 관련하여 Exception class 하나 따로 만들어서 handling 할 것."
-            throw e;
-        }
+        // Convert infix to postfix, and return postfixQueue.
+        return infixToPostfix(infixQueue);
     }
 
 
@@ -93,7 +82,6 @@ public class Parsing {
         // Ready to find operands
         final Pattern OPERAND_PATTERN = Pattern.compile("[0-9]+");
         Matcher operandMatcher = OPERAND_PATTERN.matcher(input);
-        int prevStart = -1;
         int prevEnd = 0;
 
         // Until there's more operand
@@ -106,22 +94,18 @@ public class Parsing {
             String currOperand = operandMatcher.group();
             String currOperatorChunk = input.substring(prevEnd, currStart);
 
-            // Store Operator & Operand into the resultQueue(infix form).
-            try {
-                // Test validity of [Operator] chunk and add them in result Queue first.
-                processOperatorChunk(currOperatorChunk, resultQueue);
-                /* Preceding [Operator] added in resultQueue */
 
-                // Convert current operand to Element class instance and add it to Queue.
-                processOperand(currOperand, resultQueue);
-                /* Following [Operand] added in resultQueue */
+            /* Store Operator & Operand into the resultQueue(infix form). */
 
-            } catch (Exception e) {
-                throw e;
-            }
+            // Test validity of [Operator] chunk and add them in result Queue first.
+            processOperatorChunk(currOperatorChunk, resultQueue);
+            /* Preceding [Operator] added in resultQueue */
 
-            // Update the prev index of start & end.
-            prevStart = currStart;
+            // Convert current operand to Element class instance and add it to Queue.
+            processOperand(currOperand, resultQueue);
+            /* Following [Operand] added in resultQueue */
+
+            // Update the prev index of end.
             prevEnd = currEnd;
         }
 
@@ -140,12 +124,11 @@ public class Parsing {
         }
         /* Preceding [Operator] added in resultQueue */
 
-        // Return
         return resultQueue;
     }
 
 
-    public static void processOperatorChunk(String operatorChunk, Queue infixQueue) throws Exception {
+    public static void processOperatorChunk(String operatorChunk, Queue<Element> infixQueue) throws Exception {
         // 1. If currOperatorChunk is the first one,
         if (infixQueue.isEmpty()) {
             // Input string starts with operator chunk.
@@ -155,6 +138,7 @@ public class Parsing {
                     throw new Exception("NOT ALOWED: STARTS WITH INVALID OPERATOR");
                 }
 
+                // If the form is legal, split operator-chunk by single operator.
                 for (char currOperator : operatorChunk.toCharArray()) {
                     Element newElem;
                     if (currOperator == '-') {
@@ -194,15 +178,17 @@ public class Parsing {
                     newElem = new Element(currOperator);
                 }
 
+                // Add operator element.
                 infixQueue.add(newElem);
             }
         }
     }
 
 
-    public static void processOperand(String operand, Queue infixQueue) throws Exception {
+    public static void processOperand(String operand, Queue<Element> infixQueue) {
         // No need to check; [Operator] that starts with "0-" excluding "0" never comes.
         Element newOperand = new Element(Long.parseLong(operand));
+        // Add operand element.
         infixQueue.add(newOperand);
     }
 
@@ -212,16 +198,17 @@ public class Parsing {
         Stack<Element> operatorStack = new Stack<>();
         Queue<Element> postfixQueue = new LinkedList<>();
 
-        // Until infix is empty
+        // Until infix is empty.
         while (!infixQueue.isEmpty()) {
-            // Poll 1 element
+            // Poll single element.
             Element currElem = infixQueue.poll();
-            // Current Element is operator
+            // 1. Current Element is operator.
             if (currElem.isOpertor()) {
-                // operator is closing parenthesis
+                // 1) Operator is ')'.
                 if (currElem.getOperator() == ')') {
                     // Pop all the stored operators and push to the postfixStack until '('
                     while (operatorStack.peek().getOperator() != '(' && !operatorStack.isEmpty()) {
+                        // Get single operator from top of the operatorStack and add it to postfixQueue.
                         postfixQueue.add(operatorStack.pop());
                     }
 
@@ -229,11 +216,10 @@ public class Parsing {
                     if (operatorStack.isEmpty())
                         throw new Exception("NOT ALLOWED : FAILED TO FIND PAIR OF ')'");
 
-                    // Pop '(' without storing.
+                    // Remove remained '(' by pop without storing.
                     operatorStack.pop();
 
-
-                // operator is not ')'
+                // 2) Operator is not ')'.
                 } else {
                     // Compare priorities between 'currElem' and 'top element of Stack'
                     // If, current element has low-priority,
@@ -243,26 +229,26 @@ public class Parsing {
                     }
                     /* In Element.compareTo() method, pre-promised decisions for the same priority cases considering left-associative / right-associative. So, No need to consider 'same-priority' cases. */
 
+                    // Push operator to operatorStack.
                     operatorStack.push(currElem);
                 }
 
-            // currElem is operand
+            // 2. CurrElem is operand
             } else {
-                // ERROR already handled in advance.
+                // ERROR already handled in advance, so, simply add to postfixQueue.
                 postfixQueue.add(currElem);
             }
         }
-
         /* Now, infixQueue is empty */
 
-        // Until operationStack is empty
+
+        // Move all remained operators from operatorStack to postfixQueue.
         while (!operatorStack.isEmpty()) {
             postfixQueue.add(operatorStack.pop());
         }
-
         /* Now, operatorStack is empty */
 
-        // Helping garbage collector to delete unnecesary object
+        // Help garbage collector to delete unnecesary object.
         infixQueue = null;
         operatorStack = null;
 

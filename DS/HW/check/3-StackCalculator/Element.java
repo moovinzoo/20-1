@@ -1,10 +1,7 @@
-import java.lang.reflect.Constructor;
-
 public class Element {
-    // FIXME: 2020/04/27 "Enum 굳이 필요??"
-    private boolean isOperand;
-    private long operand;
-    private char operator;
+    private final boolean isOperand;
+    private final long operand;
+    private final char operator;
 
 
     // Constructor for type:Operand
