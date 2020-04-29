@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 
 public class Parsing {
+    public static final String CALCULATING_PATTERN = "\\^\\*\\/\\%\\+\\-";
 
     // FIXME: 2020/04/26 "이렇게하면 throw 되나?"
     public static Stack<Element> processInput(String input) throws Exception {
@@ -59,7 +60,8 @@ public class Parsing {
     // For the first step of Parsing, check if input string contains NOT-allowed characters.
     public static void testInputContainsWrong(String input) throws Exception {
         // If input contains NOT-allowed characters, throws.
-        if (!input.matches("[0-9/%^+*)(-]*"))
+//        if (!input.matches("[0-9/%^+*)(-]*"))
+        if (!input.matches("[0-9" + CALCULATING_PATTERN + "\\)\\(]*"))
             throw new Exception("NOT ALLOWED : ~(CHARACTER SET) EXSITS");
     }
 
@@ -151,7 +153,7 @@ public class Parsing {
         if (infixQueue.isEmpty()) {
             if (operatorChunk.length() > 0) {
                 // Test for 2 only forms of first-operator-chunk.
-                if (!operatorChunk.matches("[-(]*")) {
+                if (!operatorChunk.matches("[\\-\\(]*")) {
                     throw new Exception("NOT ALOWED: STARTS WITH INVALID OPERATOR");
                 }
 
@@ -170,7 +172,7 @@ public class Parsing {
         // 2. currOperatorChunk is not the first one,
         } else {
             // Test for 2 only forms of nth-operator-chunk (n>1).
-            if (!operatorChunk.matches("[\\)]*[\\^\\*\\/\\%\\+\\-][\\-\\(]*") && !operatorChunk.matches("[\\^\\*\\/\\%\\+\\-][\\-\\(]*")) {
+            if (!operatorChunk.matches("[\\)]*" + "[" + CALCULATING_PATTERN + "]" + "[\\-\\(]*") && !operatorChunk.matches("[" + CALCULATING_PATTERN + "]" + "[\\-\\(]*")) {
                 throw new Exception("NOT ALLOWED: INVALID OPERATOR");
             }
             /* Now, operator chunk is valid */
@@ -183,7 +185,7 @@ public class Parsing {
                 Element newElem;
 
                 // Case1: First operator that belongs to {^, *, /, %, +, -} comes,
-                if (!isValidOperatorPrecedes && (""+currOperator).matches("[^*/%+-]")) {
+                if (!isValidOperatorPrecedes && (""+currOperator).matches("[" + CALCULATING_PATTERN + "]")) {
                     isValidOperatorPrecedes = true;
                     newElem = new Element(currOperator);
                     // Case2: '-' comes after another operator that belongs to {^, *, /, %, +, -}.
