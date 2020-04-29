@@ -162,7 +162,7 @@ public class Parsing {
                     Element newElem;
                     if (currOperator == '-') {
                         newElem = new Element('~');
-                    } else {
+                    } else { // currOperator == '('
                         newElem = new Element('(');
                     }
 
