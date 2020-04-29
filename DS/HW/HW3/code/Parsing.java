@@ -151,6 +151,7 @@ public class Parsing {
     public static void processOperatorChunk(String operatorChunk, Queue infixQueue) throws Exception {
         // 1. If currOperatorChunk is the first one,
         if (infixQueue.isEmpty()) {
+            // Input string starts with operator chunk.
             if (operatorChunk.length() > 0) {
                 // Test for 2 only forms of first-operator-chunk.
                 if (!operatorChunk.matches("[\\-\\(]*")) {
@@ -162,7 +163,7 @@ public class Parsing {
                     if (currOperator == '-') {
                         newElem = new Element('~');
                     } else {
-                        newElem = new Element('~');
+                        newElem = new Element('(');
                     }
 
                     infixQueue.add(newElem);
