@@ -30,10 +30,27 @@ public class CalculatorTest
         Queue<Element> postfixQueue = Parsing.processInput(input);
 
         // Calculate postfix stack expression.
-        long result = Calculator.calculate(postfixQueue);
+		String resultStr = printQueue(postfixQueue);
+		long resultLong = Calculator.calculate(postfixQueue);
 
         // If there was no exception, print out postfix expression and result.
-		System.out.println(postfixQueue.toString());
-		System.out.println(result);
+		System.out.println(resultStr);
+		System.out.println(resultLong);
+	}
+
+	public static String printQueue(Queue<Element>postfixQueue) {
+		// Using StringBuffer not to repeatedly assign new memory area
+		StringBuffer sb = new StringBuffer();
+
+		// To prevent element missing, using iterator
+		for (Element currElem : postfixQueue) {
+			sb.append(currElem.isOpertor()?(currElem.getOperator()):(currElem.getOperand()));
+		}
+
+		String resultStr = sb.toString();
+		// Help to free the instance
+		sb = null;
+
+		return resultStr;
 	}
 }
