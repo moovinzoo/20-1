@@ -1,3 +1,5 @@
+import java.lang.reflect.Constructor;
+
 public class Element {
     // FIXME: 2020/04/27 "Enum 굳이 필요??"
     private boolean isOperand;
@@ -16,9 +18,9 @@ public class Element {
     /* NO NEED */
 
     // Constructor for type:Operand
-    public Element(long _integer) {
+    public Element(long _operand) {
         this.isOperand = true;
-        this.operand = _integer;
+        this.operand = _operand;
         this.operator = '\0';
     }
 
@@ -29,23 +31,23 @@ public class Element {
         this.operator = _operator;
     }
 
-    // Constructor that needs to determine
-    public Element(String chunkWithNoSpaces) {
-
-        char firstChar = chunkWithNoSpaces.charAt(0);
-
-        // _chunk holds operand
-        if (firstChar >= '0' && firstChar <= '9') {
-            this.isOperand = true;
-            this.operand = Long.parseLong(chunkWithNoSpaces);
-            this.operator = '\0';
-        // _chunk holds operator
-        } else {
-            this.isOperand = false;
-            this.operand = 0;
-            this.operator = chunkWithNoSpaces.charAt(0);
-        }
-    }
+//     Constructor that needs to determine
+//    public Element(String chunkWithNoSpaces) {
+//
+//        char firstChar = chunkWithNoSpaces.charAt(0);
+//
+//        // _chunk holds operand
+//        if (firstChar >= '0' && firstChar <= '9') {
+//            this.isOperand = true;
+//            this.operand = Long.parseLong(chunkWithNoSpaces);
+//            this.operator = '\0';
+//        // _chunk holds operator
+//        } else {
+//            this.isOperand = false;
+//            this.operand = 0;
+//            this.operator = chunkWithNoSpaces.charAt(0);
+//        }
+//    }
 
     // Prevent name corruption between member variable and method
     public boolean isOpertor() {
@@ -62,11 +64,11 @@ public class Element {
 
     public int compareTo(Element o) throws Exception{
         // TODO: 2020/04/27 "체크하려고 만든거니 나중에 지우자"
-        if (!this.isOpertor() || !o.isOpertor()) {
-            throw new Exception("NOT ALLOWED: COMPARING TWO OPERANDS");
-        }
+//        if (!this.isOpertor() || !o.isOpertor()) {
+//            throw new Exception("NOT ALLOWED: COMPARING BETWEEN OPERATOR AND OPERAND");
+//        }
 
-        if (o == null) return 1;
+//        if (o == null) return 1;
 
         // Determine priority by covering all the cases
         // FIXME: 2020/04/27 "최대 비교 횟수가 8번이니까 평균적으로 4.5번 거치는 셈이라고 러프하게 보면 차라리 어레이 할당하는게 나으려나"

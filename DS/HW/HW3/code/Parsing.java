@@ -132,7 +132,7 @@ public class Parsing {
         if (prevEnd < input.length()) {
             // It should only be "))...)"
             String lastOperatorChunk = input.substring(prevEnd);
-            if (!lastOperatorChunk.matches("[)]+")) {
+            if (!lastOperatorChunk.matches("[\\)]+")) {
                throw new Exception("NOT ALLOWED: ENDS WITH ILLEGAL OPERATORS");
             }
 
@@ -204,7 +204,7 @@ public class Parsing {
 
     public static void processOperand(String operand, Queue infixQueue) throws Exception {
         // No need to check; [Operator] that starts with "0-" excluding "0" never comes.
-        Element newOperand = new Element(operand);
+        Element newOperand = new Element(Long.parseLong(operand));
         infixQueue.add(newOperand);
     }
 
@@ -295,7 +295,7 @@ public class Parsing {
                 } else {
                     // Compare priorities between 'currElem' and 'top element of Stack'
                     // If, current element has low-priority,
-                    while (currElem.compareTo(operatorStack.peek()) < 0) {
+                    while (!operatorStack.isEmpty() && currElem.compareTo(operatorStack.peek()) < 0) {
                         // Pop operator on the top of the operatorstack that has high-priority, and push it to the postfixStack.
                         postfixStack.push(operatorStack.pop());
                     }
@@ -306,9 +306,9 @@ public class Parsing {
 
             // currElem is operand
             } else {
-                // When two operand wating in a row,
-                if (!infixQueue.peek().isOpertor())
-                    throw new Exception("NOT ALLOWED : CONTINUOUS OPERANDS");
+//                // When two operand wating in a row,
+//                if (!infixQueue.peek().isOpertor())
+//                    throw new Exception("NOT ALLOWED : CONTINUOUS OPERANDS");
                 postfixStack.push(currElem);
 
             }
