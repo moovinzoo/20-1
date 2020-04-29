@@ -116,7 +116,7 @@ public class Element {
             return -1;
         }
 
-        throw new Exception("ERROR");
+        throw new Exception("NOT ALLOWED: FAILED TO PAIR OPERATOR");
     }
 
     public void makeOperatorUnary() {

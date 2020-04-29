@@ -32,7 +32,12 @@ public class CalculatorTest
 
         // Calculate postfix stack expression.
 		String resultStr = printQueue(postfixQueue);
-		long resultLong = Calculator.calculate(postfixQueue);
+		long resultLong;
+		try {
+			resultLong = Calculator.calculate(postfixQueue);
+		} catch (Exception e) {
+			throw e;
+		}
 
         // If there was no exception, print out postfix expression and result.
 		System.out.println(resultStr);

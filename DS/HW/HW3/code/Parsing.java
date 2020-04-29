@@ -48,7 +48,7 @@ public class Parsing {
 
     public static void testSpacesBetweenOperands(String input) throws Exception{
         // Check if there exist invalid chunk like [operand][spaces][operand].
-        if (input.matches("[0-9]+[ \t]+[0-9]+"))
+        if (input.matches(".*[0-9]+[ \t]+[0-9]+.*"))
             throw new Exception("NOT ALLOWED : SPACE BETWEEN OPERANDS");
     }
 
