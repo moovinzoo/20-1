@@ -28,13 +28,13 @@ public class CalculatorTest
 	private static void command(String input) throws Exception
 	{
 		// Convert input string to postfix stack.
-        Stack<Element> postfixStack = Parsing.processInput(input);
+        Queue<Element> postfixQueue = Parsing.processInput(input);
 
         // Calculate postfix stack expression.
-        long result = Calculator.calculate(postfixStack);
+        long result = Calculator.calculate(postfixQueue);
 
         // If there was no exception, print out postfix expression and result.
-		System.out.println(postfixStack.toString());
+		System.out.println(postfixQueue.toString());
 		System.out.println(result);
 	}
 }

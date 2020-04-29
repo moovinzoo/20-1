@@ -9,7 +9,7 @@ public class Parsing {
     public static final String CALCULATING_PATTERN = "\\^\\*\\/\\%\\+\\-";
 
     // FIXME: 2020/04/26 "이렇게하면 throw 되나?"
-    public static Stack<Element> processInput(String input) throws Exception {
+    public static Queue<Element> processInput(String input) throws Exception {
         try {
             // Check if there exist invalid chunk like [operand][spaces][operand].
             testSpacesBetweenOperands(input);
@@ -32,12 +32,12 @@ public class Parsing {
             /* Now, input string processed chunks-level and stored as Element in parsedString(queue). */
 
             // Convert infix expression to postfix expression.
-            Stack<Element> postfixStack = infixToPostfix(infixQueue);
+            Queue<Element> postfixQueue = infixToPostfix(infixQueue);
 
             /* Now, input string processed chunks-level and stored as Element in parsedString(queue). */
 
             // Return converted stack as result.
-            return postfixStack;
+            return postfixQueue;
 
         } catch (Exception e) {
             // FIXME: 2020/04/27 "if문 throw new~ 관련하여 Exception class 하나 따로 만들어서 handling 할 것."
@@ -266,9 +266,9 @@ public class Parsing {
 
 
     // Convert infix expression to postfix expression.
-    public static Stack<Element> infixToPostfix(Queue<Element> infixQueue) throws Exception {
+    public static Queue<Element> infixToPostfix(Queue<Element> infixQueue) throws Exception {
         Stack<Element> operatorStack = new Stack<>();
-        Stack<Element> postfixStack = new Stack<>();
+        Queue<Element> postfixQueue = new LinkedList<>();
 
         // Until infix is empty
         while (!infixQueue.isEmpty()) {
@@ -280,7 +280,7 @@ public class Parsing {
                 if (currElem.getOperator() == ')') {
                     // Pop all the stored operators and push to the postfixStack until '('
                     while (operatorStack.peek().getOperator() != '(' || !operatorStack.isEmpty()) {
-                        postfixStack.push(operatorStack.pop());
+                        postfixQueue.add(operatorStack.pop());
                     }
 
                     // When finding '(' ends without success
@@ -297,7 +297,7 @@ public class Parsing {
                     // If, current element has low-priority,
                     while (!operatorStack.isEmpty() && currElem.compareTo(operatorStack.peek()) < 0) {
                         // Pop operator on the top of the operatorstack that has high-priority, and push it to the postfixStack.
-                        postfixStack.push(operatorStack.pop());
+                        postfixQueue.add(operatorStack.pop());
                     }
                     /* In Element.compareTo() method, pre-promised decisions for the same priority cases considering left-associative / right-associative. So, No need to consider 'same-priority' cases. */
 
@@ -309,7 +309,7 @@ public class Parsing {
 //                // When two operand wating in a row,
 //                if (!infixQueue.peek().isOpertor())
 //                    throw new Exception("NOT ALLOWED : CONTINUOUS OPERANDS");
-                postfixStack.push(currElem);
+                postfixQueue.add(currElem);
 
             }
         }
@@ -318,7 +318,7 @@ public class Parsing {
 
         // Until operationStack is empty
         while (!operatorStack.isEmpty()) {
-            postfixStack.push(operatorStack.pop());
+            postfixQueue.add(operatorStack.pop());
         }
 
         /* Now, operatorStack is empty */
@@ -328,6 +328,6 @@ public class Parsing {
         operatorStack = null;
 
         // Return finished postfixStack.
-        return postfixStack;
+        return postfixQueue;
     }
 }

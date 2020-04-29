@@ -6,14 +6,14 @@ import java.util.Stack;
 import java.util.function.ToDoubleBiFunction;
 
 public class Calculator {
-    public static long calculate(Stack<Element> postfixStack) throws Exception {
+    public static long calculate(Queue<Element> postfixStack) throws Exception {
         // Instantiate local variable for calculation.
         Stack<Long> operandStack = new Stack<>();
 
         // Until postfixStack is empty,
         while (!postfixStack.isEmpty()) {
             // Pop one element on the top.
-            Element currElem = postfixStack.pop();
+            Element currElem = postfixStack.poll();
 
             // Operator pops
             if (currElem.isOpertor()) {
@@ -33,8 +33,6 @@ public class Calculator {
                     // FIXME: 2020/04/29 "FROM HERE!!!"
                     long right = operandStack.pop();
                     long left = operandStack.pop();
-//                    long right = operandStack.pop();
-//                    long left = operandStack.pop();
                     if (currOperator == '*') {
                         operandStack.push(left * right);
                     } else if (currOperator == '%') {
