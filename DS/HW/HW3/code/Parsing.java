@@ -47,7 +47,7 @@ public class Parsing {
 
     public static void testSpacesBetweenOperands(String input) throws Exception{
         // Check if there exist invalid chunk like [operand][spaces][operand].
-        if (!input.matches("[0-9]+[ \t]+[0-9]+"))
+        if (input.matches("[0-9]+[ \t]+[0-9]+"))
             throw new Exception("NOT ALLOWED : SPACE BETWEEN OPERANDS");
     }
 
@@ -170,7 +170,7 @@ public class Parsing {
         // 2. currOperatorChunk is not the first one,
         } else {
             // Test for 2 only forms of nth-operator-chunk (n>1).
-            if (!operatorChunk.matches("[)]*[^*/%+-][-(]*") && !operatorChunk.matches("[^*/%+-][-(]*")) {
+            if (!operatorChunk.matches("[\\)]*[\\^\\*\\/\\%\\+\\-][\\-\\(]*") && !operatorChunk.matches("[\\^\\*\\/\\%\\+\\-][\\-\\(]*")) {
                 throw new Exception("NOT ALLOWED: INVALID OPERATOR");
             }
             /* Now, operator chunk is valid */
