@@ -44,7 +44,19 @@ public class CalculatorTest
 
 		// To prevent element missing, using iterator
 		for (Element currElem : postfixQueue) {
-			sb.append(currElem.isOpertor()?(currElem.getOperator()):(currElem.getOperand()));
+			if (currElem.isOpertor()) {
+				sb.append(currElem.getOperator());
+			} else {
+				sb.append(currElem.getOperand());
+			}
+
+			// Concat " " after each element.
+			sb.append(" ");
+		}
+
+		if (sb.length() != 0) {
+			// Delete the last " ".
+			sb.deleteCharAt(sb.length() - 1);
 		}
 
 		String resultStr = sb.toString();
