@@ -8,7 +8,7 @@
 
 using namespace std;
 
-// Revising..
+// Revised..
 Backpack::Backpack() {
     // Initialize member variable storeInventory
     this->storeInventory = StoreInventory().item_list;
@@ -33,9 +33,7 @@ Backpack::Backpack() {
 //     return this->storeInventory;
 // }
 
-//TODO: ver.3
-// ver.2 ; for not using get/set
-// ver.3 ; from 'days' and 'nights' to 'cnt_days' and 'cnt_nights'
+// Revising...
 void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     // Set local variables 'days_on_camp', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
     DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp();
