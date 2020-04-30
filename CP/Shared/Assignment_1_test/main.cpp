@@ -512,8 +512,9 @@ void testPrint() {
 int main() {
     cout << "******************************" << endl;
     cout << "Starting Test :) \n" << endl;
-    testNoError();
+    //testNoError();
     testConstructor();
+/*
     testAddItem();
     testRemoveItemInt();
     testRemoveItemItem();
@@ -522,6 +523,7 @@ int main() {
     testAssignItem();
     cout << "\nTest print (check if correct)" << endl;
     testPrint();
+*/
 
     cout << "\nEnd of Test" << endl;
 }

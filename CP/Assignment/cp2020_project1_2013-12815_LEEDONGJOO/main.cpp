@@ -512,7 +512,7 @@ int main() {
 
     cout << "TESTING CONSTRUCTOR" << endl;
     Backpack *b = new Backpack();
-    b->get_storage_items()[1].print();
+    cout << "TESTING CONSTRUCTOR... DONE" << endl;
 
     cout << "******************************" << endl;
     cout << "Starting Test :) \n" << endl;

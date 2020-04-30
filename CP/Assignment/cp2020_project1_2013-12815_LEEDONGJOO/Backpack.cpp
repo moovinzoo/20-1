@@ -8,12 +8,10 @@
 
 using namespace std;
 
-//TODO: ver.2 ; for not using getter and setter
+// Revising..
 Backpack::Backpack() {
-
     // Initialize member variable storeInventory
     this->storeInventory = StoreInventory().item_list;
-
 
     // Assign member variable packing_zones
     this->zones = new Item*[CNT_ZONES];
@@ -21,7 +19,7 @@ Backpack::Backpack() {
     for (int i = 0; i < CNT_ZONES; i++) {
         this->zones[i] = new Item[number_of_partitions[i]];
     }
-    /* Now, {SLEEPING BAG, LOW} filled in every partitions of each zones */
+    /* Now, default Item:{SLEEPING BAG, LOW} filled in every partitions of each zones */
     
     // Initialize member variables of meal & item
     this->meals = NULL;
@@ -290,14 +288,13 @@ void Backpack::print() {
 
     // At each zones,
     for (int i = 0; i < CNT_ZONES; i++) {
+        // Print message which zone I am focussing
+        cout << "Zone " << i << ":" << endl;
+
         // At each partition,
         for (int j = 0; j < number_of_partitions[i]; j++) {
-            // Print message which zone I am focussing
-            cout << "Zone " << i << ":" << endl;
-
             // Store current item as local variable
             Item curr_item = this->zones[i][j];
-
             // If it is not empty, print by using existing method.
             if (curr_item.equals(Item())) curr_item.print();
         }
