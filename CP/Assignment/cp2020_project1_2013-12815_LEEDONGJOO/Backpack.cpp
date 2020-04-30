@@ -291,17 +291,17 @@ void Backpack::removeItem(Item item) {
 //TODO: v.1
 void Backpack::print() {
     // For each zones
-    it number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
+    int number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
     for (int i = 0; i < CNT_ZONES; i++) {
         // Print message which zone I am focussing
         cout << "Zone " << i << ":" << endl;
         // Pass, if there's no Item inside
-         i (this->zones[i] == NULL) continue;
+        if (this->zones[i] == NULL) continue;
         // If there's Item inside,
         else {
             for (int j = 0; j < max_partitions_of_zone; j++) {
                 Item curr_item = this->zones[i][j];
-                 / If there's Item
+                // If there's Item
                 if (curr_item.getWeight() == LOW || curr_item.getWeight() == MEDIUM || curr_item.getWeight() == HIGH) {
                     // Print by its regular form
                     this->zones[i][j].print();
@@ -310,6 +310,29 @@ void Backpack::print() {
         }
     }
 }
+
+/* previous ver. */
+// void Backpack::print() {
+//     // For each zones
+//     int number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
+//     for (int i = 0; i < CNT_ZONES; i++) {
+//         // Print message which zone I am focussing
+//         cout << "Zone " << i << ":" << endl;
+//         // Pass, if there's no Item inside
+//         if (this->zones[i] == NULL) continue;
+//         // If there's Item inside,
+//         else {
+//             for (int j = 0; j < max_partitions_of_zone; j++) {
+//                 Item curr_item = this->zones[i][j];
+//                 // If there's Item
+//                 if (curr_item.getWeight() == LOW || curr_item.getWeight() == MEDIUM || curr_item.getWeight() == HIGH) {
+//                     // Print by its regular form
+//                     this->zones[i][j].print();
+//                 }
+//              }
+//         }
+//     }
+// }
 
 Meal* Backpack::getMeals() {
     return meals;
