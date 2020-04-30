@@ -156,18 +156,49 @@ void Backpack::packBackpack() {
 }
 
 // PASSED!
+// void Backpack::addItem(Item item) {
+//     // Member variable 'items' is null(empty).
+//     if (this->items == NULL) {
+//         this->items = new Item[1];
+//         items[0] = item;
+
+//     } else {
+//         // Copy existing Items
+//         int curr_len = this->item_length;
+//         Item curr_items[curr_len];
+//         for (int i = 0; i < curr_len; i++) {
+//             curr_items[i] = this->items[i];
+//         }
+
+//         // re-assign 'items' by new length
+//         this->items = new Item[curr_len + 1];
+        
+//         // Move Items back
+//         for (int i = 0; i < curr_len; i++) {
+//             this->items[i] = curr_items[i];
+//         }
+
+//         // Add new one in the last place
+//         this->items[curr_len] = item;
+//     }
+
+//     // Increase 'item_length'
+//     (this->item_length)++;
+// }
 void Backpack::addItem(Item item) {
     // Member variable 'items' is null(empty).
     if (this->items == NULL) {
         this->items = new Item[1];
-        items[0] = item;
+        items[0].setItemType(item.getItemType());
+        items[0].setWeight(item.getWeight());
 
     } else {
         // Copy existing Items
         int curr_len = this->item_length;
         Item curr_items[curr_len];
         for (int i = 0; i < curr_len; i++) {
-            curr_items[i] = this->items[i];
+            curr_items[i].setItemType(this->items[i].getItemType());
+            curr_items[i].setWeight(this->items[i].getWeight());
         }
 
         // re-assign 'items' by new length
@@ -175,11 +206,13 @@ void Backpack::addItem(Item item) {
         
         // Move Items back
         for (int i = 0; i < curr_len; i++) {
-            this->items[i] = curr_items[i];
+            this->items[i].setItemType(curr_items[i].getItemType());
+            this->items[i].setWeight(curr_items[i].getWeight());
         }
 
         // Add new one in the last place
-        this->items[curr_len] = item;
+        this->items[curr_len].setItemType(item.getItemType());
+        this->items[curr_len].setWeight(item.getWeight());
     }
 
     // Increase 'item_length'
@@ -188,37 +221,103 @@ void Backpack::addItem(Item item) {
 
 // Revised.
 void Backpack::removeItem(int i) {
+    int curr_len = this->item_length;
+
+    // For extra ordinary cases.
+    if (curr_len == 0) return;
+    if (curr_len == 1) {
+        this->items = NULL;
+        return;
+    }
+    if (i >= curr_len) return;
+
+    /* From here, ordinary cases */ 
+    cout << "START REMOVING(ORDINARY CASE)"<<endl;
+
+    // /* Testing */
+    // // Before removing
+    // cout<< "Before removing"<<endl;
+    // for (int j = 0; j < this->item_length; j++) {
+    //     this->items[i].print();
+    // }
+    // /* Testing */
+    // // Before removing
+
     // Set local variable that has smaller length
-    Item new_items[(this->item_length) - 1];
+    Item new_items[curr_len - 1];
 
     bool isAfterRemove = false;
-    // At each Item in items(previous),
-    for (int j = 0; j < this->item_length; j++) {
-        // if current Item is to be removed one.
+    for (int j = 0; j < curr_len; j++) {
+        // Current Item is to be removed one.
         if (j == i) {
+            // Do not store, and pass the copying process below.
             isAfterRemove = true;
             continue;
         }
+
         // Copying Items from 'items' to 'new_items'
         if (isAfterRemove) {
-            new_items[j - 1] = this->items[j];
+            new_items[j - 1].setItemType(this->items[j].getItemType());
+            new_items[j - 1].setWeight(this->items[j].getWeight());
         } else {
-            new_items[j] = this->items[j];
+            new_items[j].setItemType(this->items[j].getItemType());
+            new_items[j].setWeight(this->items[j].getWeight());
         }
     }
+    
+    // /* Testing */
+    // // while removing
+    // cout<< "while removing"<<endl;
+    // for (int j = 0; j < curr_len; j++) {
+    //     new_items[i].print();
+    // }
+    // /* Testing */
+    // // while removing
+
+    // // At each Item in items(previous),
+    // for (int j = 0; j < i; j++) {
+    //     new_items[j] = this->items[j];
+    // }
+    // for (int j = i + 1; j < curr_len; j++) {
+    //     new_items[j] = this->items[j-1];
+    // }
 
     // Re-assign 'items' and 'item_length'
+    curr_len--;
     (this->item_length)--;
-    this->items = new Item[item_length];
+    this->items = new Item[curr_len];
 
     // Copying Items from 'new_items' to re-assigned 'items'
-    for (int j = 0; j < this->item_length; j++) {
-        this->items[j] = new_items[j];
+    for (int j = 0; j < curr_len; j++)
+    {
+        this->items[j].setItemType(new_items[j].getItemType());
+        this->items[j].setWeight(new_items[j].getWeight());
     }
+
+    // /* Testing */
+    // // Before removing
+    // cout<< "After removing"<<endl;
+    // for (int j = 0; j < curr_len; j++) {
+    //     this->items[i].print();
+    // }
+    // /* Testing */
+    // // Before removing
 }
+
 
 //TODO: Copy 'items' except item
 void Backpack::removeItem(Item item) {
+    int curr_len = this->item_length;
+
+    // For extra ordinary cases.
+    if (curr_len == 0) return;
+    if (curr_len == 1) {
+        this->items = NULL;
+        return;
+    }
+
+    bool hasFound = false;
+
     // Set local variable to copy 'items' except item
     Item new_items[(this->item_length) - 1];
     for (int j = 0; j < this->item_length; j++) {
