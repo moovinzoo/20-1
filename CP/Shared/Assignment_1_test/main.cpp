@@ -513,7 +513,7 @@ int main() {
     cout << "******************************" << endl;
     cout << "Starting Test :) \n" << endl;
     //testNoError();
-    testConstructor();
+    //testConstructor();
 /*
     testAddItem();
     testRemoveItemInt();

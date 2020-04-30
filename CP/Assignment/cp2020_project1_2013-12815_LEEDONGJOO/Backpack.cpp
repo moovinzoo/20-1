@@ -8,7 +8,7 @@
 
 using namespace std;
 
-// Revised..
+// Revised!
 Backpack::Backpack() {
     // Initialize member variable storeInventory
     this->storeInventory = StoreInventory().item_list;
@@ -33,47 +33,41 @@ Backpack::Backpack() {
 //     return this->storeInventory;
 // }
 
-// Revising...
+// Revised !
 void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     // Set local variables 'days_on_camp', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
     DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp();
     Weight meal_weight = customerRequirement.getPreferredMealWeight();
 
     // Set local variables 'days', 'nights' by comparing enum data types.
-    int cnt_days;
-    int cnt_nights;
-    if (days_on_camp == ONE) {
-        cnt_days = 1;
-        cnt_nights = 0;
-    } else if (days_on_camp == TWO) {
-        cnt_days = 2;
-        cnt_nights = 1;
-    } else {
-        cnt_days = 3;
-        cnt_nights = 2;
+    int cnt_days = 1;
+    int cnt_nights = 0;
+    if (days_on_camp != ONE) {
+        if (days_on_camp == TWO) {
+            cnt_days += 1;
+            cnt_nights += 1;
+        } else {
+            cnt_days += 2;
+            cnt_nights += 2;
+        }
     }
 
     // Assign member variable 'meal_length'.
     this->meal_length = (cnt_days * 2) + (cnt_nights * 2);
 
     // Set local variable 'arr_meals' that is going to assign member variable 'meals', later.
-    Meal arr_meals[this->meal_length];
-
-    //FIXME: Is it needed to sort these Meals in some order?
+    this->meals = new Meal[this->meal_length];
     // Put day-related Meals in 'arr_meals'
     for (int i = 0; i < (cnt_days * 2); i += 2) {
-        arr_meals[i] = Meal(LUNCH, meal_weight);
-        arr_meals[i+1] = Meal(SNACK, meal_weight);
+        this->meals[i] = Meal(LUNCH, meal_weight);
+        this->meals[i+1] = Meal(SNACK, meal_weight);
     }
 
     // Put night-related Meals in 'arr_meals'
     for (int i = (cnt_days * 2); i < this->meal_length; i += 2) {
-        arr_meals[i] = Meal(BREAKFAST, meal_weight);
-        arr_meals[i+1] = Meal(DINNER, meal_weight);
+        this->meals[i] = Meal(BREAKFAST, meal_weight);
+        this->meals[i+1] = Meal(DINNER, meal_weight);
     }
-
-    // Assign local variable 'arr_meals' to member variable 'meals'
-    this->meals = arr_meals;
 }
 
 //TODO: ver.1 ; with not using get/set
