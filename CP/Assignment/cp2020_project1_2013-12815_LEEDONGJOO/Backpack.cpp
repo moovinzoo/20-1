@@ -155,34 +155,35 @@ void Backpack::packBackpack() {
     }
 }
 
-// Revising...
+// Revised.
 void Backpack::addItem(Item item) {
-    // if assignItem() or addItem() never called before('items' is empty)
+    // Member variable 'items' is null(empty).
     if (this->items == NULL) {
         this->items = new Item[1];
         items[0] = item;
-        this->item_length = 1;
+
     } else {
         // Copy existing Items
-        Item curr_items[this->item_length + 1];
-        for (int i = 0; i < this->item_length; i++) {
+        int curr_len = this->item_length;
+        Item curr_items[curr_len];
+        for (int i = 0; i < curr_len; i++) {
             curr_items[i] = this->items[i];
         }
 
         // re-assign 'items' by new length
-        this->items = new Item[(this->item_length) + 1];
+        this->items = new Item[curr_len + 1];
         
         // Move Items back
-        for (int i = 0; i < this->item_length; i++) {
+        for (int i = 0; i < curr_len; i++) {
             this->items[i] = curr_items[i];
         }
 
         // Add new one in the last place
-        this->items[this->item_length] = item;
-
-        // Increase 'item_length'
-        (this->item_length)++;
+        this->items[curr_len] = item;
     }
+
+    // Increase 'item_length'
+    (this->item_length)++;
 }
 
 //TODO: Copy 'items' except i-th Item
