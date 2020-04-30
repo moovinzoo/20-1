@@ -17,8 +17,8 @@ Backpack::Backpack() {
 
     // Assign member variable storeInventory
     // StoreInventory *si = new StoreInventory();
-    this->storeInventory = StoreInventory().item_list;
 
+    this->storeInventory = StoreInventory().item_list;
     // Assign member variable packing_zones
     this->zones = new Item*[CNT_ZONES];
     int number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
@@ -252,10 +252,21 @@ void Backpack::addItem(Item item) {
 void Backpack::removeItem(int i) {
     // Set local variable that has smaller length
     Item new_items[(this->item_length) - 1];
+
+    bool isAfterRemove = false;
+    // At each Item in items(previous),
     for (int j = 0; j < this->item_length; j++) {
+        // if current Item is to be removed one.
+        if (j == i) {
+            isAfterRemove = true;
+            continue;
+        }
         // Copying Items from 'items' to 'new_items'
-        if (j == i) continue; // except i-th Item
-        new_items[j] = this->items[j];
+        if (isAfterRemove) {
+            new_items[j] = this->items[j-1];
+        } else {
+            new_items[j] = this->items[j];
+        }
     }
 
     // Re-assign 'items' and 'item_length'
@@ -288,25 +299,22 @@ void Backpack::removeItem(Item item) {
     }
 }
 
-//TODO: v.1
+/* Revised */
 void Backpack::print() {
-    // For each zones
     int number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
+
+    // At each zones,
     for (int i = 0; i < CNT_ZONES; i++) {
-        // Print message which zone I am focussing
-        cout << "Zone " << i << ":" << endl;
-        // Pass, if there's no Item inside
-        if (this->zones[i] == NULL) continue;
-        // If there's Item inside,
-        else {
-            for (int j = 0; j < max_partitions_of_zone; j++) {
-                Item curr_item = this->zones[i][j];
-                // If there's Item
-                if (curr_item.getWeight() == LOW || curr_item.getWeight() == MEDIUM || curr_item.getWeight() == HIGH) {
-                    // Print by its regular form
-                    this->zones[i][j].print();
-                }
-             }
+        // At each partition,
+        for (int j = 0; j < number_of_partitions[i]; j++) {
+            // Print message which zone I am focussing
+            cout << "Zone " << i << ":" << endl;
+
+            // Store current item as local variable
+            Item curr_item = this->zones[i][j];
+
+            // If it is not empty, print by using existing method.
+            if (curr_item.equals(Item())) curr_item.print();
         }
     }
 }
