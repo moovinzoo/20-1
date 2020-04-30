@@ -73,7 +73,7 @@ void StoreInventory::ReadFromFile(string filename) {
             }
             parsed_line.clear(); //added line (the only change we've made)
         }
-        random_shuffle(item_vector.begin(), item_vector.end());
+        // random_shuffle(item_vector.begin(), item_vector.end());
         int size = item_vector.size();
         item_list = new Item[size];
         copy(item_vector.begin(), item_vector.end(), item_list);

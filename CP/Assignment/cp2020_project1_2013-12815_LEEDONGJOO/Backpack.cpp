@@ -10,15 +10,11 @@ using namespace std;
 
 //TODO: ver.2 ; for not using getter and setter
 Backpack::Backpack() {
-    //FIXME: Is it needed outside of the scope?
-    // I think the answer is YES
-    // But it is already decleared as 'new' in class::StoreInventory
-    // So no need to instantiated as 'new' keyword in this Constructor
 
-    // Assign member variable storeInventory
-    // StoreInventory *si = new StoreInventory();
-
+    // Initialize member variable storeInventory
     this->storeInventory = StoreInventory().item_list;
+
+
     // Assign member variable packing_zones
     this->zones = new Item*[CNT_ZONES];
     int number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
@@ -26,30 +22,19 @@ Backpack::Backpack() {
         this->zones[i] = new Item[number_of_partitions[i]];
     }
     /* Now, {SLEEPING BAG, LOW} filled in every partitions of each zones */
-
     
-
-
-    //TODO: 오브젝트 포인트 벡터에 오브젝트 포인터 할당하기.
-    // 이렇게 하면, print()문제도 해결될 것 같다.
-    // size Expand/Shrink도 용이핟.
-    // 해결해야 할 점 ; new를 하지 않아도 되는지
-    // 기타 벡터 특성 반영할 수 있도록
-    //FIXME: for Refactoring ; by using std::vector
-    // Item *tmpItemPtr = new Item[5];
-    // new_vector.push_back(tmpItemPtr);
-    // vector<Item *> new_vector;
-    // zones = &new_vector[0];
-
-    //TODO: 리스트버전이 더 나을지도.
-    
-
-    //TODO: Initialize rest of the member variables to 0/NULL
+    // Initialize member variables of meal & item
     this->meals = NULL;
     this->meal_length = 0;
     this->items = NULL;
     this->item_length = 0;
 }
+
+// Item *Backpack::get_storage_items()
+// {
+//     return this->storeInventory;
+// }
+
 //TODO: ver.3
 // ver.2 ; for not using get/set
 // ver.3 ; from 'days' and 'nights' to 'cnt_days' and 'cnt_nights'
