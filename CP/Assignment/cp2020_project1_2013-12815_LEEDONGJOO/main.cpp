@@ -510,9 +510,9 @@ void testPrint() {
 
 int main() {
 
-    cout << "TESTING AssignMeals()" << endl;
-    testAssignMeals();
-    cout << "TESTING AssignMeals()" << endl;
+    cout << "TESTING AssignItem()" << endl;
+    testAssignItem();
+    cout << "TESTING AssignItem()" << endl;
 
     cout << "******************************" << endl;
     cout << "Starting Test :) \n" << endl;
