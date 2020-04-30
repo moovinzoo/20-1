@@ -186,7 +186,7 @@ void Backpack::addItem(Item item) {
     (this->item_length)++;
 }
 
-//TODO: Copy 'items' except i-th Item
+// Revised.
 void Backpack::removeItem(int i) {
     // Set local variable that has smaller length
     Item new_items[(this->item_length) - 1];
@@ -201,15 +201,15 @@ void Backpack::removeItem(int i) {
         }
         // Copying Items from 'items' to 'new_items'
         if (isAfterRemove) {
-            new_items[j] = this->items[j-1];
+            new_items[j - 1] = this->items[j];
         } else {
             new_items[j] = this->items[j];
         }
     }
 
     // Re-assign 'items' and 'item_length'
-    this->items = new Item[item_length - 1];
     (this->item_length)--;
+    this->items = new Item[item_length];
 
     // Copying Items from 'new_items' to re-assigned 'items'
     for (int j = 0; j < this->item_length; j++) {
