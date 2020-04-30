@@ -33,7 +33,7 @@ Backpack::Backpack() {
 //     return this->storeInventory;
 // }
 
-// Revised !
+// Revised!
 void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     // Set local variables 'days_on_camp', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
     DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp();
@@ -70,8 +70,7 @@ void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     }
 }
 
-//TODO: ver.1 ; with not using get/set
-//FIXME: add로 인해 items가 미리 채워져있는 경우도 생각해야하나?
+// Revising...
 void Backpack::assignItem(CustomerRequirement customerRequirement) {
     // Set local variables 'days_on_camp', 'item_weight', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
     DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp();
