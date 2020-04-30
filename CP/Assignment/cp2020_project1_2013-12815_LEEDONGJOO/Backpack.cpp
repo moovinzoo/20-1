@@ -123,10 +123,10 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     /* After preceding loop, preferred item that is not the 'storeInventory remained default(SLEEPING_BAG, LOW) */
 }
 
-// Revising...
+// Revised.
 void Backpack::packBackpack() {
-
     // In packing each item, there exist order and zones.
+    // Local variables below are intended to act like they are mapped.
     ItemType packing_order[SORT_OF_ITEMS] = {SLEEPING_BAG, TENT, COOKING, WATER, CLOTHING, FISHING_ROD, LURE};
     int packing_zones[SORT_OF_ITEMS] = {4, 4, 3, 3, 2, 1, 0};
 
@@ -138,6 +138,7 @@ void Backpack::packBackpack() {
 
         // Search that Item in 'items'
         for (int j = 0; j < this->item_length; j++) {
+
             // if it is exact Item that was looking for
             if (this->items[j].getItemType() == curr_packing_order) {
                 // If this zone is empty(default item is in)
@@ -146,27 +147,13 @@ void Backpack::packBackpack() {
                 } else {
                     this->zones[curr_packing_zone][1] = this->items[j];
                 }
+
                 // Search ended, get out of for-loop
                 break;
             }
         }
     }
 }
-/* previous ver. */
-                // case 1 : this Item comes first in this zone
-                // if (this->zones[curr_packing_zone] == NULL) {
-                //     this->zones[curr_packing_zone] = new Item[1];
-                //     this->zones[curr_packing_zone][0] = this->items[j];
-
-                // case 2 : this Item comes second in this zone
-                // else {
-                //     // copying the existing(first) Item
-                //     Item past_item(this->zones[curr_packing_zone][0]);
-                //     // increasing size of zone
-                //    this->zones[curr_packing_zone] = new Item[2];
-                //    this->zones[curr_packing_zone][0] = past_item;
-                //    this->zones[curr_packing_zone][1] = this->items[j];
-                // }
 
 //TODO: v.1
 void Backpack::addItem(Item item) {
