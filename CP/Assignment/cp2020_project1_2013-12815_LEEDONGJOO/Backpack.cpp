@@ -15,13 +15,19 @@ Backpack::Backpack() {
     // But it is already decleared as 'new' in class::StoreInventory
     // So no need to instantiated as 'new' keyword in this Constructor
 
+    // Assign member variable storeInventory
     // StoreInventory *si = new StoreInventory();
-    // zone 수만 고정, 각각의 item 수는 미정 -> 동적할당
-    // 임의로 지정가능?
-    // [5]로 fix 가능?
-    //FIXME: new로 선언할 필요가 있나? 어차피 tmp_zones에 할당될텐데.
     this->storeInventory = StoreInventory().item_list;
-    // this->zones = new Item*[CNT_ZONES];
+
+    // Assign member variable packing_zones
+    this->zones = new Item*[CNT_ZONES];
+    int number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
+    for (int i = 0; i < CNT_ZONES; i++) {
+        this->zones[i] = new Item[number_of_partitions[i]];
+    }
+    /* Now, {SLEEPING BAG, LOW} filled in every partitions of each zones */
+
+    
 
 
     //TODO: 오브젝트 포인트 벡터에 오브젝트 포인터 할당하기.
@@ -36,11 +42,7 @@ Backpack::Backpack() {
     // zones = &new_vector[0];
 
     //TODO: 리스트버전이 더 나을지도.
-
     
-
-    
-
 
     //TODO: Initialize rest of the member variables to 0/NULL
     this->meals = NULL;
@@ -173,33 +175,26 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
 //TODO: Move Items in 'items' into 'zones'
 //FIXME: 하나 넣으면 하나 더 있어도 지금은 그냥 무시, 여럿 중 하나만 넣는 것은 충족하는데 items로부터 지운다던가 명시되지 않은 action은 발생 X
 void Backpack::packBackpack() {
-    // There's certain order for packing bags
+
+    // In packing each item, there exist order and zones.
     ItemType packing_order[SORT_OF_ITEMS] = {SLEEPING_BAG, TENT, COOKING, WATER, CLOTHING, FISHING_ROD, LURE};
     int packing_zones[SORT_OF_ITEMS] = {4, 4, 3, 3, 2, 1, 0};
 
-//        int len1 = malloc_usable_size(bStore) / sizeof(Item);
-    // At each order of items
+    // By packing order, at each order of items,
     for (int i = 0; i < SORT_OF_ITEMS; i++) {
         // Set local variables not to re-visiting outside
         ItemType curr_packing_order = packing_order[i];
         int curr_packing_zone = packing_zones[i];
+
         // Search that Item in 'items'
         for (int j = 0; j < this->item_length; j++) {
             // if it is exact Item that was looking for
             if (this->items[j].getItemType() == curr_packing_order) {
-                // case 1 : this Item comes first in this zone
-                if (this->zones[curr_packing_zone] == NULL) {
-                    this->zones[curr_packing_zone] = new Item[1];
+                // If this zone is empty(default item is in)
+                if (this->zones[curr_packing_zone][0].equals(Item())) {
                     this->zones[curr_packing_zone][0] = this->items[j];
-                // case 2 : this Item comes second in this zone
-                }
-                else {
-                    // copying the existing(first) Item
-                    Item past_item(this->zones[curr_packing_zone][0]);
-                    // increasing size of zone
-                   this->zones[curr_packing_zone] = new Item[2];
-                   this->zones[curr_packing_zone][0] = past_item;
-                   this->zones[curr_packing_zone][1] = this->items[j];
+                } else {
+                    this->zones[curr_packing_zone][1] = this->items[j];
                 }
                 // Search ended, get out of for-loop
                 break;
@@ -207,6 +202,21 @@ void Backpack::packBackpack() {
         }
     }
 }
+/* previous ver. */
+                // case 1 : this Item comes first in this zone
+                // if (this->zones[curr_packing_zone] == NULL) {
+                //     this->zones[curr_packing_zone] = new Item[1];
+                //     this->zones[curr_packing_zone][0] = this->items[j];
+
+                // case 2 : this Item comes second in this zone
+                // else {
+                //     // copying the existing(first) Item
+                //     Item past_item(this->zones[curr_packing_zone][0]);
+                //     // increasing size of zone
+                //    this->zones[curr_packing_zone] = new Item[2];
+                //    this->zones[curr_packing_zone][0] = past_item;
+                //    this->zones[curr_packing_zone][1] = this->items[j];
+                // }
 
 //TODO: v.1
 void Backpack::addItem(Item item) {
@@ -237,11 +247,6 @@ void Backpack::addItem(Item item) {
         (this->item_length)++;
     }
 }
-
-// assignItem에 의하면 각 아이템은 하나씩 밖에 들어가지 않는데 removeItem에서는 중복된거는 하나만 삭제하라고 해서 충분히 헷갈릴만한 소지가 있었네요.
-// 저의 의도는 만약 addItem의 사용으로 중복된 Item들이 items array에 들어가있을수도 있는 상황에 대해 removeItem은 하나만 삭제하라고 얘기했습니다. 그에 따라 packBackpack의 설명이 많이 부족한 상태네요.
-// backBackpack할 때는 만약 해당 zone에 들어가야될 Item이 하나가 아닌 다수가 있을 경우 그중 하나만 넣으라고 설명을 수정해놓겠습니다. (그러나 이러한 상황은 제가 드릴 테스트 코드에 포함이 되어있을 수도 안되어있을 수도 있습니다. 그에 따라 유동적으로 코딩을 해주시면 되겠습니다.
-//일상에 빗대어 말하자면 assignItem은 고객의 요청에 의해 필요한 최소한의 물품만 준비해준다라고 생각하면 좋겠고요. addItem은 고객이 추가적으로 구매한다? 정도로 생각하면 되겠습니다. 그에 따라 가방을 쌀때는 (packBackpack) 다 들고 갈 필요는 없으니 겹치는 장비중 하나만 가져간다 라고 생각하면 좋겠습니다. 감사합니다.
 
 //TODO: Copy 'items' except i-th Item
 void Backpack::removeItem(int i) {
@@ -281,31 +286,28 @@ void Backpack::removeItem(Item item) {
     for (int j = 0; j < this->item_length; j++) {
         this->items[j] = new_items[j];
     }
-
 }
 
-//FIXME: 동적할당된 배열의 끝을 알 수 있는 방법이 없다. Segmentation Fault 날 수도.. 걍 대충 막아놓음
 //TODO: v.1
 void Backpack::print() {
     // For each zones
-    int max_partitions_of_zone = 2;
+    it number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
     for (int i = 0; i < CNT_ZONES; i++) {
         // Print message which zone I am focussing
         cout << "Zone " << i << ":" << endl;
         // Pass, if there's no Item inside
-        if (this->zones[i] == NULL) continue;
+         i (this->zones[i] == NULL) continue;
         // If there's Item inside,
         else {
             for (int j = 0; j < max_partitions_of_zone; j++) {
                 Item curr_item = this->zones[i][j];
-                // If there's Item
+                 / If there's Item
                 if (curr_item.getWeight() == LOW || curr_item.getWeight() == MEDIUM || curr_item.getWeight() == HIGH) {
                     // Print by its regular form
                     this->zones[i][j].print();
                 }
-            }
+             }
         }
-
     }
 }
 

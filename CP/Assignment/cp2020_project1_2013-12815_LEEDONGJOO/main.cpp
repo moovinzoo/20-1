@@ -18,9 +18,9 @@ void testNoError() {
         b.assignMeals(CustomerRequirement(ONE, LOW, MEDIUM));
         b.assignItem(CustomerRequirement(ONE, LOW, MEDIUM));
         b.packBackpack();
-//        b.addItem(Item(COOKING, HIGH));
-//        b.removeItem(Item(COOKING, HIGH));
-//        b.removeItem(1);
+       b.addItem(Item(COOKING, HIGH));
+       b.removeItem(Item(COOKING, HIGH));
+       b.removeItem(1);
         cout << "Test NoError: Passed" << endl;
     } catch (...) {
         cout << "Test NoError: Failed" << endl;
