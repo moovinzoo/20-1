@@ -512,7 +512,7 @@ int main() {
 
     cout << "******************************" << endl;
     cout << "Starting Test :) \n" << endl;
-    testRemoveItemInt();
+    testRemoveItemItem();
     cout << "\nEnd of Test" << endl;
 
     
