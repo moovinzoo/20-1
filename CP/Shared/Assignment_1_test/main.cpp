@@ -516,13 +516,11 @@ int main() {
     testConstructor();
     testAssignMeals();
     testAssignItem();
+    testPackBackPack();
 /*
     testAddItem();
     testRemoveItemInt();
     testRemoveItemItem();
-    testPackBackPack();
-    testAssignMeals();
-    testAssignItem();
     cout << "\nTest print (check if correct)" << endl;
     testPrint();
 */

@@ -123,7 +123,7 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     /* After preceding loop, preferred item that is not the 'storeInventory remained default(SLEEPING_BAG, LOW) */
 }
 
-// Revised.
+// PASSED!
 void Backpack::packBackpack() {
     // In packing each item, there exist order and zones.
     // Local variables below are intended to act like they are mapped.

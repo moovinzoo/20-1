@@ -510,12 +510,11 @@ void testPrint() {
 
 int main() {
 
-    cout << "TESTING AssignItem()" << endl;
-    testAssignItem();
-    cout << "TESTING AssignItem()" << endl;
-
     cout << "******************************" << endl;
     cout << "Starting Test :) \n" << endl;
+    testPackBackPack();
+    cout << "\nEnd of Test" << endl;
+
     
     // testNoError();
     // testConstructor();
@@ -525,9 +524,8 @@ int main() {
     // testPackBackPack();
     // testAssignMeals();
     // testAssignItem();
-    cout << "\nTest print (check if correct)" << endl;
+    // cout << "\nTest print (check if correct)" << endl;
 
     // testPrint();
 
-    cout << "\nEnd of Test" << endl;
 }
