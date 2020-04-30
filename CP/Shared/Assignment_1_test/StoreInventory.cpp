@@ -29,7 +29,7 @@ ItemType StoreInventory::strToItemType(char* it) {
     } else if (strcmp(it, "WATER") == 0) {
         return WATER;
     }
-
+    
     return SLEEPING_BAG;
 }
 
@@ -41,14 +41,14 @@ Weight StoreInventory::strToWeight(char* w) {
     } else if (strcmp(w, "HIGH") == 0) {
         return HIGH;
     }
-
+    
     return LOW;
-
+    
 }
 
 void StoreInventory::ReadFromFile(string filename) {
     ifstream ifs(filename);
-
+    
     if(ifs.is_open()) {
         vector<Item> item_vector;
         vector<char*> parsed_line;
@@ -62,7 +62,7 @@ void StoreInventory::ReadFromFile(string filename) {
                 parsed_line.push_back(pch);
                 pch = strtok(NULL,delimiter);
             }
-
+            
             if(!strncmp(parsed_line.at(0),"item",sizeof("item"))) {
                 char* one = parsed_line.at(1);
                 char* two = parsed_line.at(2);
@@ -73,7 +73,8 @@ void StoreInventory::ReadFromFile(string filename) {
             }
             parsed_line.clear(); //added line (the only change we've made)
         }
-//        random_shuffle(item_vector.begin(), item_vector.end());
+        
+        random_shuffle(item_vector.begin(), item_vector.end());
         int size = item_vector.size();
         item_list = new Item[size];
         copy(item_vector.begin(), item_vector.end(), item_list);

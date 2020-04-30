@@ -1,12 +1,11 @@
-#include <iostream>
 #include "Backpack.h"
 // #include <vector>
 // #include <list>
+#include <iostream>
+using namespace std;
 #define INVENTORY_SIZE 42 // Hard-coded the length of inventory's items
 #define SORT_OF_ITEMS 7 // Hard-coded the length of inventory's items
 #define CNT_ZONES 5
-
-using namespace std;
 
 //TODO: ver.2 ; for not using getter and setter
 Backpack::Backpack() {
@@ -177,7 +176,8 @@ void Backpack::packBackpack() {
     ItemType packing_order[SORT_OF_ITEMS] = {SLEEPING_BAG, TENT, COOKING, WATER, CLOTHING, FISHING_ROD, LURE};
     int packing_zones[SORT_OF_ITEMS] = {4, 4, 3, 3, 2, 1, 0};
 
-//        int len1 = malloc_usable_size(bStore) / sizeof(Item);
+    //FIXME: .compareTo() 메서드 전혀 이용하고 있지 못한데, 출력결과에 어떤 의미가 있는지를 모르겠네..
+
     // At each order of items
     for (int i = 0; i < SORT_OF_ITEMS; i++) {
         // Set local variables not to re-visiting outside
@@ -192,14 +192,13 @@ void Backpack::packBackpack() {
                     this->zones[curr_packing_zone] = new Item[1];
                     this->zones[curr_packing_zone][0] = this->items[j];
                 // case 2 : this Item comes second in this zone
-                }
-                else {
+                } else {
                     // copying the existing(first) Item
                     Item past_item(this->zones[curr_packing_zone][0]);
                     // increasing size of zone
-                   this->zones[curr_packing_zone] = new Item[2];
-                   this->zones[curr_packing_zone][0] = past_item;
-                   this->zones[curr_packing_zone][1] = this->items[j];
+                    this->zones[curr_packing_zone] = new Item[2];
+                    this->zones[curr_packing_zone][0] = past_item;
+                    this->zones[curr_packing_zone][1] = this->items[j];
                 }
                 // Search ended, get out of for-loop
                 break;

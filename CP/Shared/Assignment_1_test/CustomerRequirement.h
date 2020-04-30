@@ -3,6 +3,9 @@
 
 #include "enum.h"
 
+// Customer's request = {weights of meals, weights of items, how many days will stay}
+
+// TODO : do customer settings
 class CustomerRequirement {
     private:
         DaysOnCamp days_on_camp;
