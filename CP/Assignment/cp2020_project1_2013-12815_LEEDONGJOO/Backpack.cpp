@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Backpack.h"
-// #include <vector>
+#include <vector>
 // #include <list>
 #define INVENTORY_SIZE 42 // Hard-coded the length of inventory's items
 #define SORT_OF_ITEMS 7 // Hard-coded the length of inventory's items
@@ -70,80 +70,62 @@ void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     }
 }
 
-// Revising...
+// Revised!
 void Backpack::assignItem(CustomerRequirement customerRequirement) {
+    /* Instanciate or assign variables */
+
     // Set local variables 'days_on_camp', 'item_weight', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
     DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp();
     Weight item_weight = customerRequirement.getPreferredItemWeight();
     Weight meal_weight = customerRequirement.getPreferredMealWeight();
 
-    // Set local variables 'cnt_days', 'cnt_nights' by comparing enum data types.
-    int cnt_days;
-    int cnt_nights;
-    if (days_on_camp == ONE) {
-        cnt_days = 1;
-        cnt_nights = 0;
-    } else if (days_on_camp == TWO) {
-        cnt_days = 2;
-        cnt_nights = 1;
-    } else if (days_on_camp == THREE) {
-        cnt_days = 3;
-        cnt_nights = 2;
-    } else {
-        cout << "Failed to read days_on_camp by enum." << endl;
-    }
-
-    // Set local variables 'cnt_fishing_item' and 'cnt_overnight_item' by considering 'meal_weight'
+    // Set local variables 'cnt_fishing_item' & 'cnt_overnight_item'.
     int cnt_fishing_item = 4;
-    int cnt_overnight_item = 2;
-
-    //FIXME: is_cooking_item_required 안필요하면 더 간단하게 정의해도 될 듯. boolean 따로 안쓰고 바로 overnight_item에 set해도 되니까.
-    bool is_cooking_item_required = (meal_weight == HIGH);
-    if (is_cooking_item_required) {
-        cnt_overnight_item++;
-    }
+    int cnt_overnight_item = (days_on_camp != ONE)? 2 : 0;
+    int cnt_cooking_item = (meal_weight == HIGH)? 1 : 0;
     
     // Assign member variable 'item_length'
-    if (cnt_nights == 0) {
-        this->item_length = cnt_fishing_item;
-    } else {
-        this->item_length = cnt_fishing_item + cnt_overnight_item;
-    }
-
+    this->item_length = cnt_fishing_item + cnt_overnight_item + cnt_cooking_item;
     // Instantiate member variable 'items'
     this->items = new Item[this->item_length];
 
-    // Making Item's candidate(full) list, local variable 'possibly_needed_items'.
-    Item *possibly_needed_items[] = {
-        new Item(CLOTHING, item_weight),
-        new Item(FISHING_ROD, item_weight),
-        new Item(LURE, item_weight),
-        new Item(WATER, HIGH),
-        new Item(SLEEPING_BAG, item_weight),
-        new Item(TENT, item_weight),
-        new Item(COOKING, item_weight),
-    };
+    /* Even if, finding Item is not in 'storeInventory', by default item had been inserted, could ignore them later. */
 
-    // Put Required Items to member variable 'items' by considering the member variable 'storeInventory'
-    // For, every needed items 
+    // Instantiate local variable 'preffered_item_arr'.
+    vector<Item> preferred_item_arr;
+    preferred_item_arr.push_back(Item(CLOTHING, item_weight));
+    preferred_item_arr.push_back(Item(FISHING_ROD, item_weight));
+    preferred_item_arr.push_back(Item(LURE, item_weight));
+    preferred_item_arr.push_back(Item(WATER, HIGH));//FIXED
+    if (cnt_overnight_item > 0) {
+        preferred_item_arr.push_back(Item(SLEEPING_BAG, MEDIUM));//FIXED
+        preferred_item_arr.push_back(Item(TENT, item_weight));
+    }// only customer having overnight camping
+    if (cnt_cooking_item > 0) { // only if needed
+        preferred_item_arr.push_back(Item(COOKING, item_weight));
+    }// only customer prefer high-weight meal
+    /* It's clear that length of preferred_item_arr is equal to member variable 'item_length'.*/
+
+
+    /* Put preferred items to member variable 'items' by considering the member variable 'storeInventory' */
+
+    // For each member of 'preffered_item_arr'
     for (int i = 0; i < this->item_length; i++) {
-        // Looking for the exactly matching Item from 'storeInventory'
+        // For Looking for the exactly matching preffered item in member variable 'storeInventory'.
         for (int j = 0; j < INVENTORY_SIZE; j++) {
+
             // If matches, then store it into member variable 'items'
-            if (possibly_needed_items[i]->equals(this->storeInventory[j])) {
-                this->items[i].setItemType(possibly_needed_items[i]->getItemType());
-                this->items[i].setWeight(possibly_needed_items[i]->getWeight());
-                break; // Exit for-loop when you found it
+            if (preferred_item_arr.at(i).equals(this->storeInventory[j])) {
+                // Found matching Item.
+                this->items[i].setItemType(preferred_item_arr.at(i).getItemType());
+                this->items[i].setWeight(preferred_item_arr.at(i).getWeight());
+
+                // Exit for-loop when you found it.
+                break;
             }
-            //FIXME: "At this point, Do nothing even if there is no matching Item in the inventory"
-            //FIXME: "At this point, Not decreasing inventory even if there is matching Item"
         }
     }
-
-    // Safely delete the local variable 'possibly_needed_items'
-    for (int i = 0; i < SORT_OF_ITEMS; i++) {
-        delete(possibly_needed_items[i]);
-    }
+    /* After preceding loop, preferred item that is not the 'storeInventory remained default(SLEEPING_BAG, LOW) */
 }
 
 //TODO: Move Items in 'items' into 'zones'
