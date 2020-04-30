@@ -518,8 +518,8 @@ int main() {
     testAssignItem();
     testPackBackPack();
     testAddItem();
-/*
     testRemoveItemInt();
+/*
     testRemoveItemItem();
     cout << "\nTest print (check if correct)" << endl;
     testPrint();
