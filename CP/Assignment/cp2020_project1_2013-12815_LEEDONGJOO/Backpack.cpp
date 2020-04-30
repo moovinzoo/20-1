@@ -123,8 +123,7 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     /* After preceding loop, preferred item that is not the 'storeInventory remained default(SLEEPING_BAG, LOW) */
 }
 
-//TODO: Move Items in 'items' into 'zones'
-//FIXME: 하나 넣으면 하나 더 있어도 지금은 그냥 무시, 여럿 중 하나만 넣는 것은 충족하는데 items로부터 지운다던가 명시되지 않은 action은 발생 X
+// Revising...
 void Backpack::packBackpack() {
 
     // In packing each item, there exist order and zones.
