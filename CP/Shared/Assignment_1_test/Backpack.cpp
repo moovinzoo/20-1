@@ -182,7 +182,7 @@ void Backpack::addItem(Item item) {
     (this->item_length)++;
 }
 
-// Revised.
+// PASSED!
 void Backpack::removeItem(int i) {
     int curr_len = this->item_length;
 
@@ -195,15 +195,7 @@ void Backpack::removeItem(int i) {
     if (i >= curr_len) return;
 
     /* From here, ordinary cases */ 
-    cout << "START REMOVING(ORDINARY CASE)"<<endl;
 
-    /*********************** Testing */
-    cout<< "Before removing"<<endl;
-    for (int j = 0; j < this->item_length; j++) {
-        this->items[i].print();
-    }
-
-    //FIXME: local? nono
     // Set local variable that has smaller length
     Item *new_items = new Item[curr_len - 1];
 
@@ -215,12 +207,6 @@ void Backpack::removeItem(int i) {
             new_items[j - 1].setItemType(this->items[j].getItemType());
             new_items[j - 1].setWeight(this->items[j].getWeight());
     }
-    
-    /*********************** Testing */
-    cout<< "After removing"<<endl;
-    for (int j = 0; j < curr_len; j++) {
-        new_items[i].print();
-    }
 
     // Re-assign 'items' and 'item_length'
     (this->item_length)--;
@@ -231,12 +217,6 @@ void Backpack::removeItem(int i) {
     {
         this->items[j].setItemType(new_items[j].getItemType());
         this->items[j].setWeight(new_items[j].getWeight());
-    }
-
-    /************************** Testing */
-    cout<< "After removing"<<endl;
-    for (int j = 0; j < curr_len; j++) {
-        this->items[i].print();
     }
 }
 
@@ -252,26 +232,20 @@ void Backpack::removeItem(Item item) {
         return;
     }
 
-    bool hasFound = false;
-    // Set local variable to copy 'items' except item
-    Item new_items[(this->item_length) - 1];
-    for (int j = 0; j < this->item_length; j++) {
-        // Copying Items from 'items' to 'new_items'
-        if (this->items[j].equals(item)) continue; // except item
-        new_items[j] = this->items[j];
+    int removingItemIndex = -1; // NOT FOUND
+    for (int i = 0; i < curr_len; i++) {
+        if (item.equals(this->items[i])) {
+            removingItemIndex = i;
+            break;
+        }
     }
 
-    // Re-assign 'items' and 'item_length'
-    this->items = new Item[item_length - 1];
-    (this->item_length)--;
-
-    // Copying Items from 'new_items' to re-assigned 'items'
-    for (int j = 0; j < this->item_length; j++) {
-        this->items[j] = new_items[j];
+    if (removingItemIndex > -1) {
+        this->removeItem(removingItemIndex);
     }
 }
 
-/* Revised */
+// PASSED!
 void Backpack::print() {
     int number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
 
@@ -279,13 +253,12 @@ void Backpack::print() {
     for (int i = 0; i < CNT_ZONES; i++) {
         // Print message which zone I am focussing
         cout << "Zone " << i << ":" << endl;
-
         // At each partition,
         for (int j = 0; j < number_of_partitions[i]; j++) {
             // Store current item as local variable
             Item curr_item = this->zones[i][j];
             // If it is not empty, print by using existing method.
-            if (curr_item.equals(Item())) curr_item.print();
+            if (!curr_item.equals(Item())) curr_item.print();
         }
     }
 }

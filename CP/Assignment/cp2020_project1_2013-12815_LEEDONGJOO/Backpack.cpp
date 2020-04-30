@@ -8,7 +8,6 @@
 
 using namespace std;
 
-// PASSED.
 Backpack::Backpack() {
     // Initialize member variable storeInventory
     this->storeInventory = StoreInventory().item_list;
@@ -28,7 +27,6 @@ Backpack::Backpack() {
     this->item_length = 0;
 }
 
-// PASSED.
 void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     // Set local variables 'days_on_camp', 'meal_weight' to store parameter's data to avoid re-visiting class::CustomerRequirement for performance.
     DaysOnCamp days_on_camp = customerRequirement.getDaysOnCamp();
@@ -65,7 +63,6 @@ void Backpack::assignMeals(CustomerRequirement customerRequirement) {
     }
 }
 
-// PASSED.
 void Backpack::assignItem(CustomerRequirement customerRequirement) {
     /* Instanciate or assign variables */
 
@@ -123,7 +120,6 @@ void Backpack::assignItem(CustomerRequirement customerRequirement) {
     /* After preceding loop, preferred item that is not the 'storeInventory remained default(SLEEPING_BAG, LOW) */
 }
 
-// PASSED!
 void Backpack::packBackpack() {
     // In packing each item, there exist order and zones.
     // Local variables below are intended to act like they are mapped.
@@ -155,7 +151,6 @@ void Backpack::packBackpack() {
     }
 }
 
-// PASSED!
 void Backpack::addItem(Item item) {
     // Member variable 'items' is null(empty).
     if (this->items == NULL) {
@@ -182,7 +177,6 @@ void Backpack::addItem(Item item) {
     (this->item_length)++;
 }
 
-// Revised.
 void Backpack::removeItem(int i) {
     int curr_len = this->item_length;
 
@@ -195,13 +189,6 @@ void Backpack::removeItem(int i) {
     if (i >= curr_len) return;
 
     /* From here, ordinary cases */ 
-    cout << "START REMOVING(ORDINARY CASE)"<<endl;
-
-    /*********************** Testing */
-    cout<< "Before removing"<<endl;
-    for (int j = 0; j < this->item_length; j++) {
-        this->items[i].print();
-    }
 
     // Set local variable that has smaller length
     Item *new_items = new Item[curr_len - 1];
@@ -227,8 +214,6 @@ void Backpack::removeItem(int i) {
     }
 }
 
-
-//TODO: Copy 'items' except item
 void Backpack::removeItem(Item item) {
     int curr_len = this->item_length;
 
@@ -239,20 +224,26 @@ void Backpack::removeItem(Item item) {
         return;
     }
 
-    int removingItemIndex = -1; // NOT FOUND
+    /* From here, ordinary cases */ 
+
+    int removingItemIndex = -1;
+
+    // Find if there is removing Item.
     for (int i = 0; i < curr_len; i++) {
+        // This Item is to be removed.
         if (item.equals(this->items[i])) {
+            // Store the index and get out of loop.
             removingItemIndex = i;
             break;
         }
     }
 
+    // Using removingItemIndex(int).
     if (removingItemIndex > -1) {
         this->removeItem(removingItemIndex);
     }
 }
 
-/* Revised */
 void Backpack::print() {
     int number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
 
@@ -260,39 +251,15 @@ void Backpack::print() {
     for (int i = 0; i < CNT_ZONES; i++) {
         // Print message which zone I am focussing
         cout << "Zone " << i << ":" << endl;
-
         // At each partition,
         for (int j = 0; j < number_of_partitions[i]; j++) {
             // Store current item as local variable
             Item curr_item = this->zones[i][j];
             // If it is not empty, print by using existing method.
-            if (curr_item.equals(Item())) curr_item.print();
+            if (!curr_item.equals(Item())) curr_item.print();
         }
     }
 }
-
-/* previous ver. */
-// void Backpack::print() {
-//     // For each zones
-//     int number_of_partitions[CNT_ZONES] = {1, 1, 1, 2, 2};
-//     for (int i = 0; i < CNT_ZONES; i++) {
-//         // Print message which zone I am focussing
-//         cout << "Zone " << i << ":" << endl;
-//         // Pass, if there's no Item inside
-//         if (this->zones[i] == NULL) continue;
-//         // If there's Item inside,
-//         else {
-//             for (int j = 0; j < max_partitions_of_zone; j++) {
-//                 Item curr_item = this->zones[i][j];
-//                 // If there's Item
-//                 if (curr_item.getWeight() == LOW || curr_item.getWeight() == MEDIUM || curr_item.getWeight() == HIGH) {
-//                     // Print by its regular form
-//                     this->zones[i][j].print();
-//                 }
-//              }
-//         }
-//     }
-// }
 
 Meal* Backpack::getMeals() {
     return meals;
