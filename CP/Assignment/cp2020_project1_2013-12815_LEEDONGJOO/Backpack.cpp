@@ -155,7 +155,7 @@ void Backpack::packBackpack() {
     }
 }
 
-//TODO: v.1
+// Revising...
 void Backpack::addItem(Item item) {
     // if assignItem() or addItem() never called before('items' is empty)
     if (this->items == NULL) {
