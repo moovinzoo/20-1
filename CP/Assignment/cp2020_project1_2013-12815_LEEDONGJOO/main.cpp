@@ -510,9 +510,9 @@ void testPrint() {
 
 int main() {
 
-    cout << "TESTING CONSTRUCTOR" << endl;
-    Backpack *b = new Backpack();
-    cout << "TESTING CONSTRUCTOR... DONE" << endl;
+    cout << "TESTING AssignMeals()" << endl;
+    testAssignMeals();
+    cout << "TESTING AssignMeals()" << endl;
 
     cout << "******************************" << endl;
     cout << "Starting Test :) \n" << endl;
