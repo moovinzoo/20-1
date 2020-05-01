@@ -256,7 +256,10 @@ void Backpack::print() {
             // Store current item as local variable
             Item curr_item = this->zones[i][j];
             // If it is not empty, print by using existing method.
-            if (!curr_item.equals(Item())) curr_item.print();
+            if (!curr_item.equals(Item())) {
+                cout << "\t";
+                curr_item.print();
+            }
         }
     }
 }
