@@ -157,8 +157,15 @@ public class SortingTest
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoHeapSort(int[] value)
 	{
-		// TODO : Heap Sort 를 구현하라.
-		return (value);
+		// Data set이 비어있거나, 1개의 데이터만 존재하는 경우 ; 정렬이 필요하지 않다.
+		if (value.length < 2) return value;
+
+		// Data set에 대한 정렬이 필요한 경우, MergeSort 클래스의 static method를 이용해 정렬을 실행한다.
+		// 이 때, 정렬이 완료된 dataset을 리턴받을 필요는 없다.
+		//** 주소값이 참조될 수 있도록 인자로써 전달하는 것으로 충분하기 때문에, return하면 괜한 overload가 된다.
+		HeapSort.sort(value);
+
+		return value;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
