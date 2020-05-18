@@ -31,7 +31,7 @@ public class MergeSort {
         int mergeIndex = 0;
 
         // subArr 둘 중 하나가 모두 옮겨질 때까지
-        while ((leftIndex < mid + 1) && (rightIndex < rightmostIndex))
+        while ((leftIndex <= mid) && (rightIndex <= rightmostIndex))
         {
             // 각각의 index가 가리키는 대상 중 크기가 작은 것을 채워넣는다.
             if (dataset[leftIndex] <= dataset[rightIndex])
@@ -44,13 +44,13 @@ public class MergeSort {
         }
 
         // Left subArr에 data가 남아있다면 크기가 큰 것일테니 mergeIndex에 차례대로 넣어준다.
-        while (leftIndex < mid + 1)
+        while (leftIndex <= mid)
         {
             mergedArr[mergeIndex++] = dataset[leftIndex++];
         }
 
         // 둘 모두 비어있는 일은 없기 때문에 left/right subArr가 비어있는지 검사하는 순서는 상관이 없다.
-        while (rightIndex < rightmostIndex)
+        while (rightIndex <= rightmostIndex)
         {
             mergedArr[mergeIndex++] = dataset[rightIndex++];
         }
