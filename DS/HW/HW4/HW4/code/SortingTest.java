@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class SortingTest
@@ -197,16 +198,63 @@ public class SortingTest
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static int[] DoRadixSort(int[] value)
+	private static int[] DoRadixSort(int[] dataset)
 	{
-		// TODO : Radix Sort 를 구현하라.
-		return (value);
-	}
+		// data의 자릿수를 비교하기 위해 n을 증가시켜가며 10^n으로 data들을 나누는 연산을 수행하게 된다.
+		// ** 이 때, 몫이 0보다 큰 data의 수를 카운트함으로써 정렬의 종결시점을 알 수 있다.
+		// ** cnt == 0이 되면, 최고자릿수까지 빠짐 없이 이 전의 정렬에서 모두 한번씩 자릿수에 맞게 정렬되었음을 뜻하기 때문에 종결한다.
 
-//	private static void swapData(int[] dataset, int index1, int index2)
-//	{
-//		int tmp = dataset[index1];
-//		dataset[index1] = dataset[index2];
-//		dataset[index2] = tmp;
-//	}
+		int size = dataset.length;
+		int remainOperand = 10;
+		int divideOperand = 1; // *10 at the end of while.
+	    int cntAliveData = 1; // Initial dummy value;
+
+		// 각 자릿수별 정렬에 있어 기존의 위치를 유지하는 Stable-Algorithm을 사용해야 한다.
+		// 빠른 수행시간을 확보하기 위해 자릿수가 0, 1, ... , 10인 수들을 모아놓는 LinkedList로 구현된 Queue를 10개 만든다.
+		// ** 순서대로 집어넣고 순서대로 꺼냄으로써 자릿수별 정렬을 하면서도 자릿수가 같은 이들간에 기존의 순서를 훼손하지 않는 Stablity를 확보할 수 있다.
+		ArrayList<Queue<Integer>> buckets = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++)
+		{
+			// Integer형만 사용할 것이므로 10개의 bucket에 대해 type에 맞게 instantiate 해준다.
+            buckets.add(new LinkedList<Integer>());
+		}
+        // 이제 buckets.get(0) ~ buckets.get(9)까지 존재.
+
+        // 가장 자릿수가 큰 수까지 모두 한 번 이상 버킷에 들어갔다 나올 때까지
+		while (cntAliveData > 0)
+		{
+			cntAliveData = 0; // 초기화
+
+			// 이전 자릿수까지 정렬된 순서대로
+			for (int i = 0; i < size; i++)
+			{
+				// data의 자릿수를 digit에 저장한다.
+			    int digit = dataset[i];
+			    digit /= divideOperand;
+			    digit %= remainOperand;
+
+			    if (digit > 0) cntAliveData++;
+
+			    // 자릿수에 맞는 bucket에 다시 담는다.
+				buckets.get(digit).add(dataset[i]);
+			}
+
+			// bucket_0부터 bucket_9까지 각 bucket에 쌓여있는 data를 넣은 순서대로 dequeue해서 dataset에 차곡차곡 담는다.
+			int cnt = 0;
+			for (int i = 0; i < 10; i++)
+			{
+				while (!buckets.get(i).isEmpty())
+				{
+					// 자동으로 type casting 되므로 Integer -> int로 담기는 것에 크게 신경쓰지 않아도 된다.
+					dataset[cnt++] = buckets.get(i).poll();
+				}
+			}
+
+			// 나누는 수와 나머지를 구하는 수를 모두 10씩 곱해주고 하나 윗 자리수를 조사하러 간다.
+			divideOperand *= 10;
+		}
+
+		return dataset;
+	}
 }

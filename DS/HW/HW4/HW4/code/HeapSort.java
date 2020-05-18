@@ -49,22 +49,3 @@ public class HeapSort
         dataset[j - 1] = tmp;
     }
 }
-
-//public static void buildHeap(int[] dataset, int size)
-//    {
-//        int[] maxHeap = new int[size];
-//        int heapSize = 0;
-//
-//        for (int i = 0; i < size; i++, heapSize++)
-//        {
-//            heapInsert(maxHeap, dataset[i], heapSize);
-//        }
-//        // Insert an item into the bottom of the complete tree
-//        // Percolate up until the heap is valid
-//
-//    }
-//    public static void heapInsert(int[] maxHeap, int newElem, )
-//    {
-//
-//    }
-//}
