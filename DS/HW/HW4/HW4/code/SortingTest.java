@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class SortingTest {
@@ -137,7 +136,7 @@ public class SortingTest {
 		// Data set이 비어있거나, 1개의 데이터만 존재하는 경우 ; 정렬이 필요하지 않다.
 		if (value.length < 2) return value;
 
-		// Data set에 대한 정렬이 필요한 경우, MergeSort 클래스의 static method를 이용해 정렬을 실행한다.
+		// Data set에 대한 정렬이 필요한 경우, HeapSort 클래스의 static method를 이용해 정렬을 실행한다.
 		// 이 때, 정렬이 완료된 dataset을 리턴받을 필요는 없다.
 		//** 주소값이 참조될 수 있도록 인자로써 전달하는 것으로 충분하기 때문에, return하면 괜한 overload가 된다.
 		HeapSort.sort(value);
@@ -200,19 +199,25 @@ public class SortingTest {
 			}
 		}
 
-		if (numNegData > 0) RadixSort.sort(negDataset, numNegData);
-		if (numPosData > 0) RadixSort.sort(posDataset, numPosData);
-
-		// 음수를 다시 -1을 곱해 역순으로 dataset에 집어넣는다.
-		for (int i = 0; i < numNegData; i++)
+		int[] negSortedDataset;
+		int[] posSortedDataset;
+		if (numNegData > 0)
 		{
-			dataset[i] = (-1) * negDataset[numNegData - i - 1];
+			// 음수를 다시 -1을 곱해 역순으로 dataset에 집어넣는다.
+			negSortedDataset = RadixSort.sort(negDataset, numNegData);
+			for (int i = 0; i < numNegData; i++)
+			{
+				dataset[i] = (-1) * negSortedDataset[numNegData - i - 1];
+			}
 		}
-
-		// 그 뒤에 양수를 정순으로 옮겨준다.
-		for (int i = 0; i < numPosData; i++)
+		if (numPosData > 0)
 		{
-			dataset[numNegData + i] = posDataset[i];
+			// 그 뒤에 양수를 정순으로 옮겨준다.
+			posSortedDataset = RadixSort.sort(posDataset, numPosData);
+			for (int i = 0; i < numPosData; i++)
+			{
+				dataset[numNegData + i] = posSortedDataset[i];
+			}
 		}
 
         return dataset;

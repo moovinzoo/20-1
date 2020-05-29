@@ -23,9 +23,24 @@ public class Matching
 		}
 	}
 
-	private static void command(String input)
-	{
-		// TODO : 아래 문장을 삭제하고 구현해라.
-		System.out.println("<< command 함수에서 " + input + " 명령을 처리할 예정입니다 >>");
+	private static void command(String input) throws IOException {
+		LinkedList<String> stringSet = new LinkedList<>();
+
+		switch (input.charAt(0)) {
+			case '<': // Filename with path
+				String filePath = input.substring(2, input.length() - 1); // 절대경로, 상대경로 모두 가능하다.
+				File newFile = new File(filePath);
+				BufferedReader bfr = new BufferedReader(new FileReader(newFile));
+				String currLine;
+				while ((currLine = bfr.readLine()) != null) { // 파일 끝까지
+				    stringSet.add(currLine);
+				}
+				bfr.close();
+				break;
+			case '@': // 0-99 사이의 입력만 들어온다.
+				break;
+			case '?':
+				break;
+		}
 	}
 }
