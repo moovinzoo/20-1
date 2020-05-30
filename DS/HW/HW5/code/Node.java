@@ -1,5 +1,6 @@
 public class Node<T> {
     private T item;
+    private Node prev;
     private Node next;
 
     public Node() {
@@ -10,8 +11,9 @@ public class Node<T> {
         next = null;
     }
 
-    public Node(T _item, Node _next) {
+    public Node(T _item, Node _prev, Node _next) {
         item = _item;
+        prev = _prev;
         next = _next;
     }
 
@@ -27,7 +29,15 @@ public class Node<T> {
         next = _next;
     }
 
+    public void setPrev(Node _prev) {
+        prev = _prev;
+    }
+
     public Node getNext() {
         return next;
+    }
+
+    public Node getPrev() {
+        return prev;
     }
 }
