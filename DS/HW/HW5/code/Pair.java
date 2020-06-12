@@ -1,35 +1,19 @@
-public class Pair<T, E> implements Comparable {
-    private T first;
-    private E second;
+public class Pair implements Comparable<Pair> {
+    private int first;
+    private int second;
 
-    public Pair(T _first, E _second) {
+    public Pair(int _first, int _second) {
         first = _first;
         second = _second;
     }
 
-    public T getFirst() {
+    public int getFirst() {
         return first;
     }
 
-    public E getSecond() {
+    public int getSecond() {
         return second;
     }
-
-//    @Override
-//    public int compareTo(Object o) {
-//        if (this.getClass() == o.getClass()) {
-//            Pair<T, E> pairedOpponent = (Pair)o;
-//            int compareFirst, compareSecond;
-//            int compareFirst = pairedOpponent
-//            if (pairedOpponent.getFirst() == this.getFirst()) {
-//                if (pairedOpponent.getSecond() == this.getSecond()) {
-//
-//                }
-//            }
-//        }
-//
-//        return -1; // 타입이 다를 때 (Exception 처럼 사용)
-//    }
 
     @Override
     public String toString() {
@@ -37,12 +21,19 @@ public class Pair<T, E> implements Comparable {
         sb.append("(");
         sb.append(first);
         sb.append(", ");
+        sb.append(second);
         sb.append(")");
         return sb.toString();
     }
 
     @Override
-    public int compareTo(Object o) {
-        return 0;
+    public int compareTo(Pair o) {
+        if (first > o.getFirst()) return 1;
+        if (first == o.getFirst()) {
+            if (second > o.getSecond()) return 1;
+            if (second == o.getSecond()) return 0;
+            return -1;
+        }
+        return -1;
     }
 }

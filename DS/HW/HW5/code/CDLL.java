@@ -1,4 +1,4 @@
-public class CDLL<T> {
+public class CDLL<T extends Comparable<T>> {
     private Node<T> head;
     private Node<T> tail;
     private int numItems;
@@ -25,6 +25,7 @@ public class CDLL<T> {
         tail.setNext(newNode);
         tail = newNode;
         head.setPrev(tail);
+        numItems++;
     }
 
     // List의 중간에 새 Node를 삽입
@@ -40,9 +41,22 @@ public class CDLL<T> {
         }
     }
 
+    // CDLL<Pair>의 경우엔 sorted order로 add
+    public void add(Pair pair) {
+        Node curr = head;
+        while (pair.compareTo((Pair)curr.getItem()) > 0) {
+            curr = curr.getNext();
+        }
+
+        Node newNode = new Node(pair, curr.getPrev(), curr);
+        curr.getPrev().setNext(newNode);
+        curr.setPrev(newNode);
+        numItems++;
+    }
+
     private Node<T> find(int index) {
         Node curr = head;
-        for (int i = 0; i < index; i++) {
+        for (int i = 0; i <= index; i++) {
             curr = curr.getNext();
         }
         return curr;
