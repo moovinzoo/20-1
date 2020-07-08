@@ -54,6 +54,10 @@ public class Rail {
         hasVisited = true;
     }
 
+    public void setUnvisited() {
+        hasVisited = false;
+    }
+
     @Override
     public String toString() {
         return (origStation.getStationName() + "-" + destStation.getStationName());

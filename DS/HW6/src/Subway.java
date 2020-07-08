@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.*;
 
 public class Subway {
@@ -18,19 +19,73 @@ public class Subway {
 
 
     public static void main(String[] args) {
-        /* Test */
-        insertStation("820", "복정", "8");
-        insertStation("1222", "복정", "K2");
-        insertStation("1221", "수서", "K2");
-        insertStation("826", "모란", "8");
-        insertStation("830", "죽전", "8");
-        insertRail("820", "826", "3");
-        insertRail("1222", "1221", "4");
-        insertRail("826", "830", "5");
-//        Station currStation = mapNameToStation.get("복정");
-//        System.out.println(currStation.toString());
+//
+//        long start = System.currentTimeMillis();
 
-        searchPath("복정", "죽전");
+        // 데이터 파일을 읽어서 맵들을 초기화한다.
+        readData(args[0]);
+        // 한줄씩 command(System.in)를 처리한다..
+        processCommand();
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+
+//        /* Test */
+//        insertStation("820", "복정", "8");
+//        insertStation("1222", "복정", "K2");
+//        insertStation("1221", "수서", "K2");
+//        insertStation("826", "모란", "8");
+//        insertStation("830", "죽전", "8");
+//        insertRail("820", "826", "3");
+//        insertRail("1222", "1221", "4");
+//        insertRail("826", "830", "5");
+////        Station currStation = mapNameToStation.get("복정");
+////        System.out.println(currStation.toString());
+//
+//        searchPath("죽전", "수서");
+//
+//        long end = System.currentTimeMillis();
+//        System.out.println( "실행 시간 : " + ( end - start )/1000.0 );
+    }
+
+    private static void readData(String fileName) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            String line;
+
+            // First, Insert Stations.
+            while (!(line = br.readLine()).isBlank()) {
+//                if (line.length() == 0) break;
+                String[] currStationParams = line.split(" ");
+                insertStation(currStationParams[0], currStationParams[1], currStationParams[2]);
+            }
+
+            // And then, Insert Rails.
+            while ((line = br.readLine()) != null) {
+                String[] currRailParams = line.split(" ");
+                insertRail(currRailParams[0], currRailParams[1], currRailParams[2]);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void processCommand() {
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String line;
+
+            // First, Insert Stations.
+            while ((line = br.readLine()) != null) {
+                if (line.equals("QUIT")) break;
+                String[] currCommandParams = line.split(" ");
+                searchPath(currCommandParams[0], currCommandParams[1]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void insertStation(String stationNumber, String stationName, String line) {
@@ -78,36 +133,36 @@ public class Subway {
     33
     */
     private static void searchPath(String origin, String destination) {
-        // 초기 변수 세팅
+        // Set initial variables
         Station origStation = mapNameToStation.get(origin);
         Station destStation = mapNameToStation.get(destination);
         int numberOfStations = mapNameToStation.size();
-//        Graph
 
         // Dijkstra 방식으로 탐색을 시작.
         initStationDistance(); // 모든 Station(Vertex)의 minDistance를 최대값으로 초기화한다.
-//        int[][] distanceMatrix = new int[numberOfStations][numberOfStations];
 
-        // traverseFromStartVertex
-
-        // orig에서 시작
         Stack<Station> stationStack = new Stack<>();
         Stack<Rail> railStack = new Stack<>(); // Path tracking을 위해서
         origStation.setMinDistance(0);
         stationStack.push(origStation);
 
-        // dest에 닿을 때까지 순회
         try {
+            // dest에 닿을 때까지 순회
             while (stationStack.peek() != destStation) {
-                // 가장 최근에 추가된 station으로 접근
+                // 가장 최근에 추가된 Station으로 접근
                 Station start = stationStack.peek();
+
+                // 가장 최근 Station이 갖는 도착역과 Rail들을 List로 만든다.
                 LinkedList<Station> endList = new LinkedList<>();
                 LinkedList<Rail> edgeList = start.getRailList();
 
-                //
+                // Rail을 순회하면서
                 for (Rail e : edgeList) {
+                    // 아직 지나간 적 없는 Rail(Edge)에 접근한다.
                     if (!e.getVisited()) {
+                        // 현재 Station 까지 걸린 시간과 현재 Rail의 elapsedTime을 더한 값을 저장한다.
                         int tmpMinDistance = e.getElapTime() + start.getMinDistance();
+                        // 위 값이 도착지점의 minDistance보다 작으면 도착 Station의 값을 갱신한다.
                         if (e.getDestStation().getMinDistance() > tmpMinDistance) {
                             e.getDestStation().setMinDistance(tmpMinDistance);
                         }
@@ -224,6 +279,9 @@ public class Subway {
     private static void initStationDistance() {
         for (Station currStation : mapNameToStation.values()) {
             currStation.setMinDistance(MAX_TIME);
+            for (Rail currRail : currStation.getRailList()) {
+                currRail.setUnvisited();
+            }
         }
     }
 }
